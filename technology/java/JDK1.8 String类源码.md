@@ -335,7 +335,7 @@ public static String join(CharSequence delimiter, CharSequence... elements) {
 从上面开头写的，我们可以看见String是被final修饰的不可继承类，这样有两个好处:
  - 安全
 当你在调用其他方法时，比如调用一些系统级操作指令之前，可能会有一些列校验，如果是可变类的话，当年校验完之后，内部值又被修改了，可能会引起系统级崩溃问题
-- 高效
+ - 高效
 传参的时候不需要考虑它会被哪个修改，如果是可变类，可能需要重新拷贝出来一个新值进行传参，这会在性能上造成一定的损耗
 
 **3.String、StringBuilder、StringBuffer的区别**
