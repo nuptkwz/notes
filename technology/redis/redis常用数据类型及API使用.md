@@ -32,7 +32,9 @@ key在seconds秒后过期如：
  
  - **type key** 
  返回key的类型，主要类型有string、hash、list、set、zSet、none
+ 
  ![在这里插入图片描述](https://img-blog.csdnimg.cn/20191229230904522.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzIyNzk3NDI5,size_16,color_FFFFFF,t_70)
+
 ### 时间复杂度比较
 命令 | 时间复杂度 |   
 -|-
@@ -44,7 +46,9 @@ expire| o(1) |
 type| o(1) |
 ## 数据结构和内部编码
 **编码方式（encoding）**: string、hash、list、set、sorted set
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20191230215054400.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzIyNzk3NDI5,size_16,color_FFFFFF,t_70)
+
 ## 单线程架构 
 redis使用了单线程的架构，那为什么使用了单线程速度还是那么快呢？主要原因有一下几点：
  - 纯内存（我们知道数据放入内存中是非常快的）
@@ -172,6 +176,7 @@ hincrbyfloat key field floatCounter
 hincrby浮点数版本
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20200103223615507.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzIyNzk3NDI5,size_16,color_FFFFFF,t_70)
+
 ## hash总结
  命令| 复杂度|
 -|-
@@ -204,7 +209,9 @@ a->java->b->c->d
  - **rpop key(o(1))**
  从列表右边弹出一个item
  - **lrem(o(n))**
+ 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20200105133706554.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzIyNzk3NDI5,size_16,color_FFFFFF,t_70)
+
  - **ltrim	key start end(o(n))**
 按照索引范围修剪列表
 
@@ -245,21 +252,33 @@ sadd key element
 
  - **srem key element(o(1))**
 将集合key中的element移除掉
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20200105150711684.png)
+
  - **scard user:1:follow**
 计算集合大小
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20200105150412448.png)
+
  - **sismember user:1:follow it (存在)**
 判断it是否在集合中
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20200105150331831.png)
+
  - **srandmember user:1:follow count**  
 从集合中随机挑count个元素
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/2020010514560954.png)
+
  - **spop user:1:follow** 
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20200105145336769.png)
+
 从集合中随机弹出一个元素
  - **smembers user:1:follow**
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20200105145221240.png)
+
 获取集合所有元素，如果集合中有非常多的数据要注意，**因为redis是单线程的，这样会阻塞。**
 **注意：**
 spop从集合中弹出元素，srandmember不会破坏集合
@@ -270,7 +289,9 @@ spop从集合中弹出元素，srandmember不会破坏集合
  - sdiff:差集
  - sinter：交集
  - sunion：并集
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20200105152953476.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzIyNzk3NDI5,size_16,color_FFFFFF,t_70)
+
 ## Tips
 SADD = Tagging
 SPOP/SRANDMEMBER = Random item
@@ -314,7 +335,9 @@ zcount key minScore maxScore
 zremrangebyscore key minScore maxScore
 
 **操作：**
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20200105160734441.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzIyNzk3NDI5,size_16,color_FFFFFF,t_70)
+
 ## 实战
 排行榜（销售榜、音乐排行榜、图书排行榜）
 ## 查缺补漏
