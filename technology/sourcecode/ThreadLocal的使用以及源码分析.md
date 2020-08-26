@@ -191,11 +191,56 @@ JDK1.8中ThreadLocal的设计原则是：每个Thread维护一个ThreadLocalMap�
 - 对于不同的线程，每次获取副本值时，别的线程并不能获取到当前线程的副本值，形成副本的隔离，互不干扰
 ## 源码分析
 ### get 方法
+```java
+public T get() {
+    //获取到当前线程
+    Thread t = Thread.currentThread();
+    //每个线程内都有一个ThreadLocalMap对象,获取到当前线程内的 ThreadLocalMap 对象，
+    ThreadLocalMap map = getMap(t);
+    if (map != null) {
+        //获取 ThreadLocalMap 中的 Entry 对象并拿到 Value值
+        ThreadLocalMap.Entry e = map.getEntry(this);
+        if (e != null) {
+            @SuppressWarnings("unchecked")
+            T result = (T)e.value;
+            return result;
+        }
+    }
+    //如果这个线程之前没创建过 ThreadLocalMap，就初始化一个ThreadLocalMap
+    return setInitialValue();
+}
 
+```
 ### getMap方法
-
+```java
+//上面传入一个Thread.currentThread()，这个方法就是获取当前线程内的ThreadLocalMap对象
+ThreadLocalMap getMap(Thread t) {
+    return t.threadLocals;
+}
+```
+threadLocals
+```java
+//这个对象的名字叫threadLocals
+ThreadLocal.ThreadLocalMap threadLocals = null;
+```
 ### set方法
+```java
+//获取当前线程的引用，把值给set进去
+public void set(T value) {
+    Thread t = Thread.currentThread();
+    ThreadLocalMap map = getMap(t);
+    if (map != null)
+        map.set(this, value);
+    else
+    //这个线程之前没创建过 ThreadLocalMap就创建一个
+        createMap(t, value);
+}
+```
 #  ThreadLocal使用注意事项
+
+ - 在使用ThreadLocal的过程中可能会导致内存泄漏的问题
+为了避免内存泄漏，用完之后调用ThreadLocal的remove方法，调用这个方法可以删除对应的value对象，可以避免内存泄漏
+ - 异步线程、子线程是不能够通过主线程的ThreadLocal获取相关信息的，可以将ThreadLocal升级为InheritableThreadLocal，但是如果异步线程获取ThreadLocal在主线程销毁ThreadLocal之后还是不能获取到
 
 # 项目中使用遇到的问题
 
