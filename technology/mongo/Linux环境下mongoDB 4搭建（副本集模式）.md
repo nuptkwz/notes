@@ -223,8 +223,10 @@ kwz_rs:PRIMARY> rs.config()
 ```yml
 kwz_rs:PRIMARY> rs.status()
 {
+		# 副本集的名字
         "set" : "kwz_rs",
         "date" : ISODate("2020-09-25T16:38:25.293Z"),
+        # 状态正常
         "myState" : 1,
         "term" : NumberLong(1),
         "syncingTo" : "",
@@ -275,12 +277,15 @@ kwz_rs:PRIMARY> rs.status()
                 "newTermStartDate" : ISODate("2020-09-25T15:54:30.567Z"),
                 "wMajorityWriteAvailabilityDate" : ISODate("2020-09-25T15:54:30.580Z")
         },
+        # 副本集成员数组
         "members" : [
                 {
                         "_id" : 0,
                         "name" : "localhost:27017",
+                        # 健康
                         "health" : 1,
                         "state" : 1,
+                        # 主节点
                         "stateStr" : "PRIMARY",
                         "uptime" : 89235,
                         "optime" : {
@@ -310,3 +315,304 @@ kwz_rs:PRIMARY> rs.status()
         "operationTime" : Timestamp(1601051900, 1)
 }
 ```
+## 添加副本从节点
+在主节点添加从节点，将其他成员加入到副本集中
+下面将27018的副本节点添加到副本集中：
+```yml
+kwz_rs:PRIMARY> rs.add("localhost:27018")
+{
+		# 说明添加成功
+        "ok" : 1,
+        "$clusterTime" : {
+                "clusterTime" : Timestamp(1601053665, 1),
+                "signature" : {
+                        "hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+                        "keyId" : NumberLong(0)
+                }
+        },
+        "operationTime" : Timestamp(1601053665, 1)
+}
+```
+此时再次查看副本集状态：
+```yml
+kwz_rs:PRIMARY> rs.status()
+{
+        "set" : "kwz_rs",
+        "date" : ISODate("2020-09-25T17:09:34.680Z"),
+        "myState" : 1,
+        "term" : NumberLong(1),
+        "syncingTo" : "",
+        "syncSourceHost" : "",
+        "syncSourceId" : -1,
+        "heartbeatIntervalMillis" : NumberLong(2000),
+        "majorityVoteCount" : 2,
+        "writeMajorityCount" : 2,
+        "optimes" : {
+                "lastCommittedOpTime" : {
+                        "ts" : Timestamp(1601053770, 1),
+                        "t" : NumberLong(1)
+                },
+                "lastCommittedWallTime" : ISODate("2020-09-25T17:09:30.959Z"),
+                "readConcernMajorityOpTime" : {
+                        "ts" : Timestamp(1601053770, 1),
+                        "t" : NumberLong(1)
+                },
+                "readConcernMajorityWallTime" : ISODate("2020-09-25T17:09:30.959Z"),
+                "appliedOpTime" : {
+                        "ts" : Timestamp(1601053770, 1),
+                        "t" : NumberLong(1)
+                },
+                "durableOpTime" : {
+                        "ts" : Timestamp(1601053770, 1),
+                        "t" : NumberLong(1)
+                },
+                "lastAppliedWallTime" : ISODate("2020-09-25T17:09:30.959Z"),
+                "lastDurableWallTime" : ISODate("2020-09-25T17:09:30.959Z")
+        },
+        "lastStableRecoveryTimestamp" : Timestamp(1601053770, 1),
+        "lastStableCheckpointTimestamp" : Timestamp(1601053770, 1),
+        "electionCandidateMetrics" : {
+                "lastElectionReason" : "electionTimeout",
+                "lastElectionDate" : ISODate("2020-09-25T15:54:30.537Z"),
+                "electionTerm" : NumberLong(1),
+                "lastCommittedOpTimeAtElection" : {
+                        "ts" : Timestamp(0, 0),
+                        "t" : NumberLong(-1)
+                },
+                "lastSeenOpTimeAtElection" : {
+                        "ts" : Timestamp(1601049270, 1),
+                        "t" : NumberLong(-1)
+                },
+                "numVotesNeeded" : 1,
+                "priorityAtElection" : 1,
+                "electionTimeoutMillis" : NumberLong(10000),
+                "newTermStartDate" : ISODate("2020-09-25T15:54:30.567Z"),
+                "wMajorityWriteAvailabilityDate" : ISODate("2020-09-25T15:54:30.580Z")
+        },
+        # 副本集成员数组中现在有两个了
+        "members" : [
+                {
+                        "_id" : 0,
+                        "name" : "localhost:27017",
+                        "health" : 1,
+                        "state" : 1,
+                        "stateStr" : "PRIMARY",
+                        "uptime" : 91104,
+                        "optime" : {
+                                "ts" : Timestamp(1601053770, 1),
+                                "t" : NumberLong(1)
+                        },
+                        "optimeDate" : ISODate("2020-09-25T17:09:30Z"),
+                        "syncingTo" : "",
+                        "syncSourceHost" : "",
+                        "syncSourceId" : -1,
+                        "infoMessage" : "",
+                        "electionTime" : Timestamp(1601049270, 2),
+                        "electionDate" : ISODate("2020-09-25T15:54:30Z"),
+                        "configVersion" : 2,
+                        "self" : true,
+                        "lastHeartbeatMessage" : ""
+                },
+                {
+                        "_id" : 1,
+                        # 第二个节点的名字
+                        "name" : "localhost:27018",
+                        "health" : 1,
+                        "state" : 2,
+                        # 它的角色是SECONDARY
+                        "stateStr" : "SECONDARY",
+                        "uptime" : 109,
+                        "optime" : {
+                                "ts" : Timestamp(1601053770, 1),
+                                "t" : NumberLong(1)
+                        },
+                        "optimeDurable" : {
+                                "ts" : Timestamp(1601053770, 1),
+                                "t" : NumberLong(1)
+                        },
+                        "optimeDate" : ISODate("2020-09-25T17:09:30Z"),
+                        "optimeDurableDate" : ISODate("2020-09-25T17:09:30Z"),
+                        "lastHeartbeat" : ISODate("2020-09-25T17:09:33.236Z"),
+                        "lastHeartbeatRecv" : ISODate("2020-09-25T17:09:34.403Z"),
+                        "pingMs" : NumberLong(0),
+                        "lastHeartbeatMessage" : "",
+                        "syncingTo" : "localhost:27017",
+                        "syncSourceHost" : "localhost:27017",
+                        "syncSourceId" : 0,
+                        "infoMessage" : "",
+                        "configVersion" : 2
+                }
+        ],
+        "ok" : 1,
+        "$clusterTime" : {
+                "clusterTime" : Timestamp(1601053770, 1),
+                "signature" : {
+                        "hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+                        "keyId" : NumberLong(0)
+                }
+        },
+        "operationTime" : Timestamp(1601053770, 1)
+}
+```
+## 添加仲裁从节点
+将27019作为仲裁节点，添加到副本集中：
+```yml
+kwz_rs:PRIMARY> rs.addArb("localhost:27019")
+{
+        "ok" : 1,
+        "$clusterTime" : {
+                "clusterTime" : Timestamp(1601054101, 1),
+                "signature" : {
+                        "hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+                        "keyId" : NumberLong(0)
+                }
+        },
+        "operationTime" : Timestamp(1601054101, 1)
+}
+```
+查看副本集状态：
+```yml
+kwz_rs:PRIMARY> rs.status()
+{
+        "set" : "kwz_rs",
+        "date" : ISODate("2020-09-25T17:15:46.933Z"),
+        "myState" : 1,
+        "term" : NumberLong(1),
+        "syncingTo" : "",
+        "syncSourceHost" : "",
+        "syncSourceId" : -1,
+        "heartbeatIntervalMillis" : NumberLong(2000),
+        "majorityVoteCount" : 2,
+        "writeMajorityCount" : 2,
+        "optimes" : {
+                "lastCommittedOpTime" : {
+                        "ts" : Timestamp(1601054140, 1),
+                        "t" : NumberLong(1)
+                },
+                "lastCommittedWallTime" : ISODate("2020-09-25T17:15:40.991Z"),
+                "readConcernMajorityOpTime" : {
+                        "ts" : Timestamp(1601054140, 1),
+                        "t" : NumberLong(1)
+                },
+                "readConcernMajorityWallTime" : ISODate("2020-09-25T17:15:40.991Z"),
+                "appliedOpTime" : {
+                        "ts" : Timestamp(1601054140, 1),
+                        "t" : NumberLong(1)
+                },
+                "durableOpTime" : {
+                        "ts" : Timestamp(1601054140, 1),
+                        "t" : NumberLong(1)
+                },
+                "lastAppliedWallTime" : ISODate("2020-09-25T17:15:40.991Z"),
+                "lastDurableWallTime" : ISODate("2020-09-25T17:15:40.991Z")
+        },
+        "lastStableRecoveryTimestamp" : Timestamp(1601054130, 1),
+        "lastStableCheckpointTimestamp" : Timestamp(1601054130, 1),
+        "electionCandidateMetrics" : {
+                "lastElectionReason" : "electionTimeout",
+                "lastElectionDate" : ISODate("2020-09-25T15:54:30.537Z"),
+                "electionTerm" : NumberLong(1),
+                "lastCommittedOpTimeAtElection" : {
+                        "ts" : Timestamp(0, 0),
+                        "t" : NumberLong(-1)
+                },
+                "lastSeenOpTimeAtElection" : {
+                        "ts" : Timestamp(1601049270, 1),
+                        "t" : NumberLong(-1)
+                },
+                "numVotesNeeded" : 1,
+                "priorityAtElection" : 1,
+                "electionTimeoutMillis" : NumberLong(10000),
+                "newTermStartDate" : ISODate("2020-09-25T15:54:30.567Z"),
+                "wMajorityWriteAvailabilityDate" : ISODate("2020-09-25T15:54:30.580Z")
+        },
+        # 副本集成员数组中现在有三个了
+        "members" : [
+                {
+                        "_id" : 0,
+                        "name" : "localhost:27017",
+                        "health" : 1,
+                        "state" : 1,
+                        "stateStr" : "PRIMARY",
+                        "uptime" : 91476,
+                        "optime" : {
+                                "ts" : Timestamp(1601054140, 1),
+                                "t" : NumberLong(1)
+                        },
+                        "optimeDate" : ISODate("2020-09-25T17:15:40Z"),
+                        "syncingTo" : "",
+                        "syncSourceHost" : "",
+                        "syncSourceId" : -1,
+                        "infoMessage" : "",
+                        "electionTime" : Timestamp(1601049270, 2),
+                        "electionDate" : ISODate("2020-09-25T15:54:30Z"),
+                        "configVersion" : 3,
+                        "self" : true,
+                        "lastHeartbeatMessage" : ""
+                },
+                {
+                        "_id" : 1,
+                        "name" : "localhost:27018",
+                        "health" : 1,
+                        "state" : 2,
+                        "stateStr" : "SECONDARY",
+                        "uptime" : 481,
+                        "optime" : {
+                                "ts" : Timestamp(1601054140, 1),
+                                "t" : NumberLong(1)
+                        },
+                        "optimeDurable" : {
+                                "ts" : Timestamp(1601054140, 1),
+                                "t" : NumberLong(1)
+                        },
+                        "optimeDate" : ISODate("2020-09-25T17:15:40Z"),
+                        "optimeDurableDate" : ISODate("2020-09-25T17:15:40Z"),
+                        "lastHeartbeat" : ISODate("2020-09-25T17:15:45.481Z"),
+                        "lastHeartbeatRecv" : ISODate("2020-09-25T17:15:45.505Z"),
+                        "pingMs" : NumberLong(0),
+                        "lastHeartbeatMessage" : "",
+                        "syncingTo" : "localhost:27017",
+                        "syncSourceHost" : "localhost:27017",
+                        "syncSourceId" : 0,
+                        "infoMessage" : "",
+                        "configVersion" : 3
+                },
+                {
+                        "_id" : 2,
+                        "name" : "localhost:27019",
+                        "health" : 1,
+                        "state" : 7,
+                        "stateStr" : "ARBITER",
+                        "uptime" : 45,
+                        "lastHeartbeat" : ISODate("2020-09-25T17:15:45.492Z"),
+                        "lastHeartbeatRecv" : ISODate("2020-09-25T17:15:45.510Z"),
+                        "pingMs" : NumberLong(0),
+                        "lastHeartbeatMessage" : "",
+                        "syncingTo" : "",
+                        "syncSourceHost" : "",
+                        "syncSourceId" : -1,
+                        "infoMessage" : "",
+                        "configVersion" : 3
+                }
+        ],
+        "ok" : 1,
+        "$clusterTime" : {
+                "clusterTime" : Timestamp(1601054140, 1),
+                "signature" : {
+                        "hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+                        "keyId" : NumberLong(0)
+                }
+        },
+        "operationTime" : Timestamp(1601054140, 1)
+}
+
+```
+# 副本集数据读写测试
+# 主节点的选举原则
+
+参考：
+1. [https://www.bilibili.com/video/BV14Z4y1p7Xu?p=29](https://www.bilibili.com/video/BV14Z4y1p7Xu?p=29)
+2. [https://github.com/nuptkwz/notes/tree/master/technology/mongo](https://github.com/nuptkwz/notes/tree/master/technology/mongo)
+
+
+
