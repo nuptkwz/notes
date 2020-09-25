@@ -87,7 +87,7 @@ spring:
       # uri: mongodb://192.168.30.129/article
 ```
 ## 评论实体类
-评论的实体如下，我创建了一个复合索引，@CompoundIndex(def = "{'userId':1,'nickName':-1}")，它是名字和别名组成的，因为这两个基本一块用的，复合索引可以减小一个索引开销
+评论的实体如下，我创建了一个复合索引，@CompoundIndex(def = "{'userId':1,'nickName':-1}")，它是名字和别名组成的，因为这两个基本一块用的，复合索引可以减少一个索引开销
 ```java
 package com.mongo.springbootmongo.entity;
 
@@ -217,8 +217,8 @@ public interface CommentRepository extends MongoRepository<Comment,String> {
 - 保存评论
 
 里面postman测试如下：
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20200924002535774.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzIyNzk3NDI5,size_16,color_FFFFFF,t_70#pic_center)
+![保存评论postman测试](https://upload-images.jianshu.io/upload_images/9905084-c8205a80d44115b5?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 - 评论列表
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20200924002616109.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzIyNzk3NDI5,size_16,color_FFFFFF,t_70#pic_center)
+![评论列表postman测试](https://upload-images.jianshu.io/upload_images/9905084-9d4e040f40bcb105?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 # 总结
 本文主要介绍了通过SpringDataMongoDB操作连接MongoDB操作数据库的过程
