@@ -889,13 +889,44 @@ kwz_rs:PRIMARY> rs.conf()
 ## 副本节点选举为主节点测试
 如上所示，当副本节点的priority大于主节点的priority，此时，27017的主节点自动蜕变为副本节点，而27018的副本节点被选举为主节点，完成切换
 ## 副本节点故障测试
-
+关闭27018副本节点、此时主节点还在，没有触发选举操作。此时，往主节点里面插入数据：
+```yml
+db.comment.insert({"_id":"4","articleid":"100001","content":"秋天里的第一杯奶茶","userId":"1002","nickName":"去苏州一起喝","createDatetime":new Date("2019-0805T22:08:15.522Z"),"likeNum":NumberInt(1000)})
+WriteResult({ "nInserted" : 1 })
+```
+再次启动27018副本节点：
+```yml 
+/usr/local/mongodb/bin/mongod -f  /mongodb/replica_sets/rs_27018/mongod.conf
+```
+此时，之前27017主节点同步的数据同步过来了
+```yml
+kwz_rs:SECONDARY> db.comment.find()
+{ "_id" : "4", "articleid" : "100001", "content" : "秋天里的第一杯奶茶", "userId" : "1002", "nickName" : "去苏州一起喝", "createDatetime" : ISODate("1970-01-01T00:00:00Z"), "likeNum" : 1000 }
+{ "_id" : ObjectId("5f6f5dc39ef50a5bad627ea5") }
+{ "_id" : ObjectId("5f6f5db29ef50a5bad627ea4") }
+```
 ## 主节点故障测试
+此时关闭27017主节点，从节点和仲裁节点对27017的心跳失败，当失败超过10秒，此时因为没有主节点了，会自动发起投票进行主节点的选取，副本节点只有27018，27019仲裁节点只有投票权没有选举权，因此27019仲裁节点投一票给27018，27018自带一票，共两票。被选举为主节点，此时具备了读写功能，如下：
+```yml
+kwz_rs:PRIMARY> db.comment.insert({"_id":"5","articleid":"100001","content":"秋天里的第一杯奶茶","userId":"1002","nickName":"去苏州一起喝","createDatetime":new Date("2019-0805T22:08:15.522Z"),"likeNum":NumberInt(1000)})
+WriteResult({ "nInserted" : 1 })
+```
 ## 仲裁节点和主节点故障测试
+演示仲裁节点和主节点故障，步骤如下：
+1. 先恢复一主一从一仲裁
+2. 关掉仲裁节点27019
+3. 关掉主节点27018
+
+此时登陆27017节点，发现27017还是从节点，副本集现在没有主节点了，现在副本集是只读状态，无法进行写入操作了
+此时如果想触发主节点的选举，再加入一个成员即可
+- 如果只加入27019仲裁节点成员，则主节点一定是27017，因为没得选了，仲裁节点不参与选举， 但参与投票
+- 如果只加入27018节点，会发起选举。因为27017和27018都是两票，则按照谁数据新，谁当主节点 
 ## 仲裁节点和从节点故障测试
+- 先恢复一主一从一仲裁
+- 关掉仲裁节点27019
+- 关掉现在的副本节点27018
+
+等待10s后，27017主节点自动降级为副本节点了。
 参考：
 1. [https://www.bilibili.com/video/BV14Z4y1p7Xu?p=29](https://www.bilibili.com/video/BV14Z4y1p7Xu?p=29)
 2. [https://github.com/nuptkwz/notes/tree/master/technology/mongo](https://github.com/nuptkwz/notes/tree/master/technology/mongo)
-
-
-
