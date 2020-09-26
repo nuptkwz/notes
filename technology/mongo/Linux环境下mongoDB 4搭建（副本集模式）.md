@@ -608,11 +608,110 @@ kwz_rs:PRIMARY> rs.status()
 
 ```
 # 副本集数据读写测试
+## 主节点写入和读取数据
+**登陆27017主节点，进行写入和读取数据操作：**
+```yml
+/usr/local/mongodb/bin/mongo --host localhost --port 27017
+```
+```yml
+kwz_rs:PRIMARY> use article
+switched to db article
+kwz_rs:PRIMARY> db
+article
+kwz_rs:PRIMARY> db.comment.insert({"articleid":"001","content":"本篇论文纯属虚构","userId":"1001","nickName":"hanhan","createDatetime":new Date()})
+WriteResult({ "nInserted" : 1 })
+kwz_rs:PRIMARY> db.comment.find()
+{ "_id" : ObjectId("5f6f07a88c6d2fbab4118f14"), "articleid" : "001", "content" : "本篇论文纯属虚构", "userId" : "1001", "nickName" : "hanhan", "createDatetime" : ISODate("2020-09-26T09:19:36.729Z") }
+```
+如上所示，我们在27017主节点进行插入和读取操作，均正常
+## 从节点写入和读取数据
+登陆27018从节点，进行写入和读取数据操作
+```yml
+/usr/local/mongodb/bin/mongo --host localhost --port 27018
+```
+```yml
+kwz_rs:SECONDARY> show dbs
+2020-09-26T17:27:32.202+0800 E  QUERY    [js] uncaught exception: Error: listDatabases failed:{
+        "operationTime" : Timestamp(1601112444, 1),
+        "ok" : 0,
+        "errmsg" : "not master and slaveOk=false",
+        "code" : 13435,
+        "codeName" : "NotMasterNoSlaveOk",
+        "$clusterTime" : {
+                "clusterTime" : Timestamp(1601112444, 1),
+                "signature" : {
+                        "hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+                        "keyId" : NumberLong(0)
+                }
+        }
+} :
+_getErrorWithCode@src/mongo/shell/utils.js:25:13
+Mongo.prototype.getDBs/<@src/mongo/shell/mongo.js:135:19
+Mongo.prototype.getDBs@src/mongo/shell/mongo.js:87:12
+shellHelper.show@src/mongo/shell/utils.js:906:13
+shellHelper@src/mongo/shell/utils.js:790:15
+@(shellhelp2):1:1
+```
+可以发现不能读取集合的数据，有个"errmsg" : "not master and slaveOk=false",可见当前节点只是数据的一个备份，不是slave节点，无法读取数据，写入当然更不行。默认情况下，从节点是没有读写权限的，可以增加读的权限，但需要进行设置。
+设置读操作权限，允许从成员上进行读的操作：
+```yml
+rs.slaveOk()或者rs.slaveOk(true)
+```
+同理，如果想取消从节点的读取权限，设置为：
+```yml
+rs.slaveOk(false)
+```
+这时候再看一下，就有了：
+```yml
+kwz_rs:SECONDARY> show dbs
+admin    0.000GB
+article  0.000GB
+config   0.000GB
+local    0.000GB
+```
+```yml
+kwz_rs:SECONDARY> use article
+switched to db article
+kwz_rs:SECONDARY> show collections
+comment
+kwz_rs:SECONDARY> db.comment.find()
+{ "_id" : ObjectId("5f6f07a88c6d2fbab4118f14"), "articleid" : "001", "content" : "本篇论文纯属虚构", "userId" : "1001", "nickName" : "hanhan", "createDatetime" : ISODate("2020-09-26T09:19:36.729Z") }
+kwz_rs:SECONDARY> db.comment.insert({"articleid":"002","content":"本篇论文纯属虚构","userId":"1001","nickName":"hanhan","createDatetime":new Date()})
+WriteCommandError({
+        "operationTime" : Timestamp(1601112924, 1),
+        "ok" : 0,
+        "errmsg" : "not master",
+        "code" : 10107,
+        "codeName" : "NotMaster",
+        "$clusterTime" : {
+                "clusterTime" : Timestamp(1601112924, 1),
+                "signature" : {
+                        "hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+                        "keyId" : NumberLong(0)
+                }
+        }
+})
+```
+## 仲裁节点查看
+登陆27019仲裁节点
+```yml
+kwz_rs:ARBITER> rs.slaveOk()
+kwz_rs:ARBITER> show dbs
+local  0.000GB
+kwz_rs:ARBITER> use local
+switched to db local
+kwz_rs:ARBITER> show collections
+replset.election
+replset.minvalid
+replset.oplogTruncateAfterPoint
+startup_log
+system.replset
+system.rollback.id
+kwz_rs:ARBITER>
+```
+可见仲裁节点不存放任何业务数据，只存放了副本集配置等数据
 # 主节点的选举原则
 
 参考：
 1. [https://www.bilibili.com/video/BV14Z4y1p7Xu?p=29](https://www.bilibili.com/video/BV14Z4y1p7Xu?p=29)
 2. [https://github.com/nuptkwz/notes/tree/master/technology/mongo](https://github.com/nuptkwz/notes/tree/master/technology/mongo)
-
-
-
