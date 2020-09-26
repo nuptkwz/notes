@@ -711,7 +711,184 @@ kwz_rs:ARBITER>
 ```
 可见仲裁节点不存放任何业务数据，只存放了副本集配置等数据
 # 主节点的选举原则
+MongoDB在副本集中，会自动进行主节点的选举，触发主节点选举的条件主要有三个，分别为：
+- 主节点故障
+- 主节点网络不可达（默认心跳时间为10s，超过10s即认为网络不可达）
+- 人工干预
 
+一旦触发选举 ，会根据一定规则进行主节点的选举，选举规则是根据票数的多少来决定的
+- 票数最高，则获胜
+- 若票数相同，且都获得了“大多数”成员的投票支持的，此时，数据新的节点会获胜，数据的新旧是通过操作日志oplog进行对比的
+
+副本集配置中的priority（优先级）对投票选举影响极大，一般情况下默认为1，它的可选范围是0-1000，相当于额外增加了0-1000票数，指定较高的值，使成员更有资格成为主要成员，更低的值可使成员更不符合条件， 通过rs.conf()可以看到集群优先级的配置。一般主节点和副本节点的优先级各为1，默认都有一票，而仲裁节点的优先级必须是0，不能为别的值。它不具备选举权，但是具备投票权（这也很好理解，仲裁节点你都没有数据，怎么可能给你选举权呢）。 
+## 优先级的设置
+- 查看副本级配置
+```yml
+kwz_rs:PRIMARY> rs.conf()
+{
+        "_id" : "kwz_rs",
+        "version" : 3,
+        "protocolVersion" : NumberLong(1),
+        "writeConcernMajorityJournalDefault" : true,
+        "members" : [
+                {
+                        "_id" : 0,
+                        "host" : "localhost:27017",
+                        "arbiterOnly" : false,
+                        "buildIndexes" : true,
+                        "hidden" : false,
+                        "priority" : 1,
+                        "tags" : {
+
+                        },
+                        "slaveDelay" : NumberLong(0),
+                        "votes" : 1
+                },
+                {
+                        "_id" : 1,
+                        "host" : "localhost:27018",
+                        "arbiterOnly" : false,
+                        "buildIndexes" : true,
+                        "hidden" : false,
+                        "priority" : 1,
+                        "tags" : {
+
+                        },
+                        "slaveDelay" : NumberLong(0),
+                        "votes" : 1
+                },
+                {
+                        "_id" : 2,
+                        "host" : "localhost:27019",
+                        "arbiterOnly" : true,
+                        "buildIndexes" : true,
+                        "hidden" : false,
+                        "priority" : 0,
+                        "tags" : {
+
+                        },
+                        "slaveDelay" : NumberLong(0),
+                        "votes" : 1
+                }
+        ],
+        "settings" : {
+                "chainingAllowed" : true,
+                "heartbeatIntervalMillis" : 2000,
+                "heartbeatTimeoutSecs" : 10,
+                "electionTimeoutMillis" : 10000,
+                "catchUpTimeoutMillis" : -1,
+                "catchUpTakeoverDelayMillis" : 30000,
+                "getLastErrorModes" : {
+
+                },
+                "getLastErrorDefaults" : {
+                        "w" : 1,
+                        "wtimeout" : 0
+                },
+                "replicaSetId" : ObjectId("5f6e12b681a01e73db9b210a")
+        }
+}
+```
+可以看到27018副本级节点原来的优先级1，现在我们将它改为2，让它默认有2票
+- 将配置导入conf_temp
+```yml
+conf_temp=rs.config()
+```
+- 将27018副本节点优先级设为2（这里数组的index默认是从0开始的）
+```yml
+conf_temp.members[1].priority=2
+```
+- 重新加载conf_temp配置
+```yml
+kwz_rs:PRIMARY> rs.reconfig(conf_temp)
+{
+        "ok" : 1,
+        "$clusterTime" : {
+                "clusterTime" : Timestamp(1601130737, 1),
+                "signature" : {
+                        "hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+                        "keyId" : NumberLong(0)
+                }
+        },
+        "operationTime" : Timestamp(1601130737, 1)
+}
+```
+- 再次查看副本集配置信息
+```yml
+kwz_rs:PRIMARY> rs.conf()
+{
+        "_id" : "kwz_rs",
+        "version" : 4,
+        "protocolVersion" : NumberLong(1),
+        "writeConcernMajorityJournalDefault" : true,
+        "members" : [
+                {
+                        "_id" : 0,
+                        "host" : "localhost:27017",
+                        "arbiterOnly" : false,
+                        "buildIndexes" : true,
+                        "hidden" : false,
+                        "priority" : 1,
+                        "tags" : {
+
+                        },
+                        "slaveDelay" : NumberLong(0),
+                        "votes" : 1
+                },
+                {
+                        "_id" : 1,
+                        "host" : "localhost:27018",
+                        "arbiterOnly" : false,
+                        "buildIndexes" : true,
+                        "hidden" : false,
+                        "priority" : 2,
+                        "tags" : {
+
+                        },
+                        "slaveDelay" : NumberLong(0),
+                        "votes" : 1
+                },
+                {
+                        "_id" : 2,
+                        "host" : "localhost:27019",
+                        "arbiterOnly" : true,
+                        "buildIndexes" : true,
+                        "hidden" : false,
+                        "priority" : 0,
+                        "tags" : {
+
+                        },
+                        "slaveDelay" : NumberLong(0),
+                        "votes" : 1
+                }
+        ],
+        "settings" : {
+                "chainingAllowed" : true,
+                "heartbeatIntervalMillis" : 2000,
+                "heartbeatTimeoutSecs" : 10,
+                "electionTimeoutMillis" : 10000,
+                "catchUpTimeoutMillis" : -1,
+                "catchUpTakeoverDelayMillis" : 30000,
+                "getLastErrorModes" : {
+
+                },
+                "getLastErrorDefaults" : {
+                        "w" : 1,
+                        "wtimeout" : 0
+                },
+                "replicaSetId" : ObjectId("5f6e12b681a01e73db9b210a")
+        }
+}
+```
+可以看到27018节点的优先级已经变为2了
+# 高可用测试
+## 副本节点故障测试
+## 主节点故障测试
+## 仲裁节点和主节点故障测试
+## 仲裁节点和从节点故障测试
 参考：
 1. [https://www.bilibili.com/video/BV14Z4y1p7Xu?p=29](https://www.bilibili.com/video/BV14Z4y1p7Xu?p=29)
 2. [https://github.com/nuptkwz/notes/tree/master/technology/mongo](https://github.com/nuptkwz/notes/tree/master/technology/mongo)
+
+
+
