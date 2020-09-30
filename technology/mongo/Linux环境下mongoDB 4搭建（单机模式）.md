@@ -79,4 +79,7 @@ To enable free monitoring, run the following command: db.enableFreeMonitoring()
 To permanently disable this reminder, run the following command: db.disableFreeMonitoring()
 ---
 ```
+参考：
+1. [https://github.com/nuptkwz/notes/blob/master/technology/mongo/Linux%E7%8E%AF%E5%A2%83%E4%B8%8BmongoDB%204%E6%90%AD%E5%BB%BA%EF%BC%88%E5%8D%95%E6%9C%BA%E6%A8%A1%E5%BC%8F%EF%BC%89.md](https://github.com/nuptkwz/notes/blob/master/technology/mongo/Linux%E7%8E%AF%E5%A2%83%E4%B8%8BmongoDB%204%E6%90%AD%E5%BB%BA%EF%BC%88%E5%8D%95%E6%9C%BA%E6%A8%A1%E5%BC%8F%EF%BC%89.md)
+
 
