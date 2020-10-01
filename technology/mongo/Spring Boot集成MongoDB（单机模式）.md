@@ -222,3 +222,6 @@ public interface CommentRepository extends MongoRepository<Comment,String> {
 ![评论列表postman测试](https://upload-images.jianshu.io/upload_images/9905084-9d4e040f40bcb105?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 # 总结
 本文主要介绍了通过SpringDataMongoDB操作连接MongoDB操作数据库的过程
+
+参考：
+1. [https://github.com/nuptkwz/notes/blob/master/technology/mongo/Linux%E7%8E%AF%E5%A2%83%E4%B8%8BmongoDB%204%E6%90%AD%E5%BB%BA%EF%BC%88%E5%8D%95%E6%9C%BA%E6%A8%A1%E5%BC%8F%EF%BC%89.md](https://github.com/nuptkwz/notes/blob/master/technology/mongo)
