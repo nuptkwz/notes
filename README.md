@@ -3,4 +3,10 @@
 ## 金融
 理财、金融基础、巴菲特系列学习笔记等
 ## 技术
-java、mysql、redis、es、kafka、源码学习、设计模式等
+### java
+### mysql
+### redis
+#### es
+### kafka
+### 源码学习
+### 设计模式等
