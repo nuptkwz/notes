@@ -6,8 +6,9 @@
 ## 框架
 ### SpringBoot
 ### SpringCloud
-## 中间件
+## 语言
 ### Java
+## 中间件
 ### Docker
 ### MySql
 ### Redis
@@ -15,4 +16,4 @@
 ### ES
 ### Kafka
 ### 源码学习
-### 设计模式等
+### 设计模式
