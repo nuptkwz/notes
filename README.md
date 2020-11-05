@@ -8,6 +8,7 @@
 ### SpringCloud
 ## 语言
 ### Java
+### Python
 ## 中间件
 ### Docker
 ### MySql
