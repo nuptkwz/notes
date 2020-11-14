@@ -7,6 +7,7 @@
 ### SpringBoot
 ### SpringCloud
 ### MyBatis
+### Spring Data JPA
 ## 语言
 ### Java
 ### Python
