@@ -9,6 +9,7 @@
 ### SpringCloud
 ### MyBatis
 ### Spring Data JPA
+### Spring Data Mongo
 ## 语言
 ### Java
 ### Python
