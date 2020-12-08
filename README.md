@@ -10,6 +10,9 @@
 ### MyBatis
 ### Spring Data JPA
 ### Spring Data Mongo
+* Linux环境下mongoDB 4搭建（单机模式）
+* Linux环境下mongoDB 4搭建（PSA架构）
+* Spring Boot集成MongoDB（单机模式）
 ## 语言
 ### Java
 ### Python
