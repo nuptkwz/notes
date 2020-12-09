@@ -15,7 +15,7 @@ MongoDB分片集群包含以下组件：
 ![mongoDB分片集群架构](https://upload-images.jianshu.io/upload_images/9905084-53db2d9118f06ba2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 # 分片集群搭建
 ## 第一套副本集
-本次相关的配置文件、数据、日志都放在sharded_cluster相应的子目录下面
+本次搭建一主一副本一仲裁，相关的配置文件、数据、日志都放在sharded_cluster相应的子目录下面，具体步骤如下：
 ### 新建副本集数据和日志的目录
 myshardrs01
 ```
@@ -27,7 +27,7 @@ mkdir -p /mongodb/sharded_cluster/myshardrs01_27218/log \ &
 mkdir -p /mongodb/sharded_cluster/myshardrs01_27218/data/db
 ```
 ### 新建或修改配置文件
-myshardrs01_27018
+#### myshardrs01_27018
 ```
 vim /mongodb/sharded_cluster/myshardrs01_27018/mongod.conf
 ```
@@ -65,7 +65,85 @@ sharding:
   #分片角色
   clusterRole: shardsvr
 ```
-
+设置sharding.clusterRole需要mongod实例运行复制。 要将实例部署为副本集成员，请使用
+replSetName设置并指定副本集的名称。
+#### myshardrs01_27118
+```
+vim /mongodb/sharded_cluster/myshardrs01_27118/mongod.conf
+```
+```
+systemLog:
+  #MongoDB发送所有日志输出的目标指定为文件
+  destination: file
+  #mongod或mongos应向其发送所有诊断日志记录信息的日志文件的路径
+  path: "/mongodb/sharded_cluster/myshardrs01_27118/log/mongod.log"
+  #当mongos或mongod实例重新启动时，mongos或mongod会将新条目附加到现有日志文件的末尾。
+  logAppend: true
+storage:
+  #mongod实例存储其数据的目录。storage.dbPath设置仅适用于mongod
+  dbPath: "/mongodb/sharded_cluster/myshardrs01_27118/data/db"
+  journal:
+    #启用或禁用持久性日志以确保数据文件保持有效和可恢复
+    enabled: true
+processManagement:
+  #启用在后台运行mongos或mongod进程的守护进程模式
+  fork: true
+  #指定用于保存mongos或mongod进程的进程ID的文件位置，其中mongos或mongod将写入其PID
+  pidFilePath: "/mongodb/sharded_cluster/myshardrs01_27118/log/mongod.pid"
+net:
+  #服务实例绑定所有IP，有副作用，副本集初始化的时候，节点名字会自动设置为本地域名，而不是ip
+  #bindIpAll: true
+  #服务实例绑定的IP
+  bindIp: localhost,192.168.30.129
+  #bindIp
+  #绑定的端口
+  port: 27118
+replication:
+  #副本集的名称
+  replSetName: myshardrs01
+sharding:
+  #分片角色
+  clusterRole: shardsvr
+```
+#### myshardrs01_27218
+```
+vim /mongodb/sharded_cluster/myshardrs01_27218/mongod.conf
+```
+```
+systemLog:
+  #MongoDB发送所有日志输出的目标指定为文件
+  destination: file
+  #mongod或mongos应向其发送所有诊断日志记录信息的日志文件的路径
+  path: "/mongodb/sharded_cluster/myshardrs01_27218/log/mongod.log"
+  #当mongos或mongod实例重新启动时，mongos或mongod会将新条目附加到现有日志文件的末尾。
+  logAppend: true
+storage:
+  #mongod实例存储其数据的目录。storage.dbPath设置仅适用于mongod
+  dbPath: "/mongodb/sharded_cluster/myshardrs01_27218/data/db"
+  journal:
+    #启用或禁用持久性日志以确保数据文件保持有效和可恢复
+    enabled: true
+processManagement:
+  #启用在后台运行mongos或mongod进程的守护进程模式
+  fork: true
+  #指定用于保存mongos或mongod进程的进程ID的文件位置，其中mongos或mongod将写入其PID
+  pidFilePath: "/mongodb/sharded_cluster/myshardrs01_27218/log/mongod.pid"
+net:
+  #服务实例绑定所有IP，有副作用，副本集初始化的时候，节点名字会自动设置为本地域名，而不是ip
+  #bindIpAll: true
+  #服务实例绑定的IP
+  bindIp: localhost,192.168.30.129
+  #bindIp
+  #绑定的端口
+  port: 27218
+replication:
+  #副本集的名称
+  replSetName: myshardrs01
+sharding:
+  #分片角色
+  clusterRole: shardsvr
+```
+### 依次启动三个mongod服务
 
 
 
