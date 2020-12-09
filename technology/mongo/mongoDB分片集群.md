@@ -144,6 +144,299 @@ sharding:
   clusterRole: shardsvr
 ```
 ### 依次启动三个mongod服务
+```
+root@keweizhou-virtual-machine:~# /usr/local/mongodb/bin/mongod -f /mongodb/sharded_cluster/myshardrs01_270
+ 18/mongod.conf
+about to fork child process, waiting until server is ready for connections.
+forked process: 5773
+child process started successfully, parent exiting
+root@keweizhou-virtual-machine:~# /usr/local/mongodb/bin/mongod -f /mongodb/sharded_cluster/myshardrs01_271
+ 18/mongod.conf
+about to fork child process, waiting until server is ready for connections.
+forked process: 5810
+child process started successfully, parent exiting
+root@keweizhou-virtual-machine:~# /usr/local/mongodb/bin/mongod -f /mongodb/sharded_cluster/myshardrs01_272
+ 18/mongod.conf
+about to fork child process, waiting until server is ready for connections.
+forked process: 5849
+child process started successfully, parent exiting
+```
+### 查看服务是否启动
+```
+root@keweizhou-virtual-machine:~# ps -ef | grep mongo
+root       5773      1  2 00:37 ?        00:00:04 /usr/local/mongodb/bin/mongod -f /mongodb/sharded_cluster/myshardrs01_27018/mongod.conf
+root       5810      1  2 00:37 ?        00:00:04 /usr/local/mongodb/bin/mongod -f /mongodb/sharded_cluster/myshardrs01_27118/mongod.conf
+root       5849      1  2 00:38 ?        00:00:03 /usr/local/mongodb/bin/mongod -f /mongodb/sharded_cluster/myshardrs01_27218/mongod.conf
+root       5903   5729  0 00:40 pts/19   00:00:00 grep --color=auto mongo
+```
+### 初始化副本集
+#### 初始化副本集和创建主节点
+使用客户端命令连接主节点，这里最好连接主节点
+```
+/usr/local/mongodb/bin/mongo --host 192.168.30.129 --port 27018
+```
+执行初始化副本集命令：
+```
+> rs.initiate()
+{
+        "info2" : "no configuration specified. Using a default configuration for the set",
+        "me" : "192.168.30.129:27018",
+        "ok" : 1,
+        "$clusterTime" : {
+                "clusterTime" : Timestamp(1607273363, 1),
+                "signature" : {
+                        "hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+                        "keyId" : NumberLong(0)
+                }
+        },
+        "operationTime" : Timestamp(1607273363, 1)
+}
+```
+查看副本集情况：
+```
+myshardrs01:PRIMARY> rs.status()
+{
+        "set" : "myshardrs01",
+        "date" : ISODate("2020-12-06T16:51:22.235Z"),
+        "myState" : 1,
+        "term" : NumberLong(1),
+        "syncingTo" : "",
+        "syncSourceHost" : "",
+        "syncSourceId" : -1,
+        "heartbeatIntervalMillis" : NumberLong(2000),
+        "majorityVoteCount" : 1,
+        "writeMajorityCount" : 1,
+        "optimes" : {
+                "lastCommittedOpTime" : {
+                        "ts" : Timestamp(1607273474, 1),
+                        "t" : NumberLong(1)
+                },
+                "lastCommittedWallTime" : ISODate("2020-12-06T16:51:14.010Z"),
+                "readConcernMajorityOpTime" : {
+                        "ts" : Timestamp(1607273474, 1),
+                        "t" : NumberLong(1)
+                },
+                "readConcernMajorityWallTime" : ISODate("2020-12-06T16:51:14.010Z"),
+                "appliedOpTime" : {
+                        "ts" : Timestamp(1607273474, 1),
+                        "t" : NumberLong(1)
+                },
+                "durableOpTime" : {
+                        "ts" : Timestamp(1607273474, 1),
+                        "t" : NumberLong(1)
+                },
+                "lastAppliedWallTime" : ISODate("2020-12-06T16:51:14.010Z"),
+                "lastDurableWallTime" : ISODate("2020-12-06T16:51:14.010Z")
+        },
+        "lastStableRecoveryTimestamp" : Timestamp(1607273413, 1),
+        "lastStableCheckpointTimestamp" : Timestamp(1607273413, 1),
+        "electionCandidateMetrics" : {
+                "lastElectionReason" : "electionTimeout",
+                "lastElectionDate" : ISODate("2020-12-06T16:49:23.955Z"),
+                "electionTerm" : NumberLong(1),
+                "lastCommittedOpTimeAtElection" : {
+                        "ts" : Timestamp(0, 0),
+                        "t" : NumberLong(-1)
+                },
+                "lastSeenOpTimeAtElection" : {
+                        "ts" : Timestamp(1607273363, 1),
+                        "t" : NumberLong(-1)
+                },
+                "numVotesNeeded" : 1,
+                "priorityAtElection" : 1,
+                "electionTimeoutMillis" : NumberLong(10000),
+                "newTermStartDate" : ISODate("2020-12-06T16:49:23.989Z"),
+                "wMajorityWriteAvailabilityDate" : ISODate("2020-12-06T16:49:24.076Z")
+        },
+        "members" : [
+                {
+                        "_id" : 0,
+                        "name" : "192.168.30.129:27018",
+                        "health" : 1,
+                        "state" : 1,
+                        "stateStr" : "PRIMARY",
+                        "uptime" : 846,
+                        "optime" : {
+                                "ts" : Timestamp(1607273474, 1),
+                                "t" : NumberLong(1)
+                        },
+                        "optimeDate" : ISODate("2020-12-06T16:51:14Z"),
+                        "syncingTo" : "",
+                        "syncSourceHost" : "",
+                        "syncSourceId" : -1,
+                        "infoMessage" : "",
+                        "electionTime" : Timestamp(1607273363, 2),
+                        "electionDate" : ISODate("2020-12-06T16:49:23Z"),
+                        "configVersion" : 1,
+                        "self" : true,
+                        "lastHeartbeatMessage" : ""
+                }
+        ],
+        "ok" : 1,
+        "$clusterTime" : {
+                "clusterTime" : Timestamp(1607273474, 1),
+                "signature" : {
+                        "hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+                        "keyId" : NumberLong(0)
+                }
+        },
+        "operationTime" : Timestamp(1607273474, 1)
+}
+```
+#### 主节点配置查看
+```
+myshardrs01:PRIMARY> rs.conf()
+{
+        "_id" : "myshardrs01",
+        "version" : 1,
+        "protocolVersion" : NumberLong(1),
+        "writeConcernMajorityJournalDefault" : true,
+        "members" : [
+                {
+                        "_id" : 0,
+                        "host" : "192.168.30.129:27018",
+                        "arbiterOnly" : false,
+                        "buildIndexes" : true,
+                        "hidden" : false,
+                        "priority" : 1,
+                        "tags" : {
+
+                        },
+                        "slaveDelay" : NumberLong(0),
+                        "votes" : 1
+                }
+        ],
+        "settings" : {
+                "chainingAllowed" : true,
+                "heartbeatIntervalMillis" : 2000,
+                "heartbeatTimeoutSecs" : 10,
+                "electionTimeoutMillis" : 10000,
+                "catchUpTimeoutMillis" : -1,
+                "catchUpTakeoverDelayMillis" : 30000,
+                "getLastErrorModes" : {
+
+                },
+                "getLastErrorDefaults" : {
+                        "w" : 1,
+                        "wtimeout" : 0
+                },
+                "replicaSetId" : ObjectId("5fcd0b93ae50cdd5f8dd65a8")
+        }
+}
+```
+#### 添加副本节点
+```
+myshardrs01:PRIMARY> rs.add("192.168.30.129:27118")
+{
+        "ok" : 1,
+        "$clusterTime" : {
+                "clusterTime" : Timestamp(1607273787, 1),
+                "signature" : {
+                        "hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+                        "keyId" : NumberLong(0)
+                }
+        },
+        "operationTime" : Timestamp(1607273787, 1)
+}
+```
+#### 添加仲裁节点
+```
+myshardrs01:PRIMARY> rs.addArb("192.168.30.129:27218")
+{
+        "ok" : 1,
+        "$clusterTime" : {
+                "clusterTime" : Timestamp(1607273887, 1),
+                "signature" : {
+                        "hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+                        "keyId" : NumberLong(0)
+                }
+        },
+        "operationTime" : Timestamp(1607273887, 1)
+}
+```
+#### 查看副本集的配置情况
+```
+myshardrs01:PRIMARY> rs.conf()
+{
+        "_id" : "myshardrs01",
+        "version" : 3,
+        "protocolVersion" : NumberLong(1),
+        "writeConcernMajorityJournalDefault" : true,
+        "members" : [
+                {
+                        "_id" : 0,
+                        "host" : "192.168.30.129:27018",
+                        "arbiterOnly" : false,
+                        "buildIndexes" : true,
+                        "hidden" : false,
+                        "priority" : 1,
+                        "tags" : {
+
+                        },
+                        "slaveDelay" : NumberLong(0),
+                        "votes" : 1
+                },
+                {
+                        "_id" : 1,
+                        "host" : "192.168.30.129:27118",
+                        "arbiterOnly" : false,
+                        "buildIndexes" : true,
+                        "hidden" : false,
+                        "priority" : 1,
+                        "tags" : {
+
+                        },
+                        "slaveDelay" : NumberLong(0),
+                        "votes" : 1
+                },
+                {
+                        "_id" : 2,
+                        "host" : "192.168.30.129:27218",
+                        "arbiterOnly" : true,
+                        "buildIndexes" : true,
+                        "hidden" : false,
+                        "priority" : 0,
+                        "tags" : {
+
+                        },
+                        "slaveDelay" : NumberLong(0),
+                        "votes" : 1
+                }
+        ],
+        "settings" : {
+                "chainingAllowed" : true,
+                "heartbeatIntervalMillis" : 2000,
+                "heartbeatTimeoutSecs" : 10,
+                "electionTimeoutMillis" : 10000,
+                "catchUpTimeoutMillis" : -1,
+                "catchUpTakeoverDelayMillis" : 30000,
+                "getLastErrorModes" : {
+
+                },
+                "getLastErrorDefaults" : {
+                        "w" : 1,
+                        "wtimeout" : 0
+                },
+                "replicaSetId" : ObjectId("5fcd0b93ae50cdd5f8dd65a8")
+        }
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
