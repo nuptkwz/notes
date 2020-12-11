@@ -16,6 +16,7 @@
 ## 语言
 ### Java
 ### Python
+* python数据分析
 ## 中间件
 ### Docker
 ### MySql
