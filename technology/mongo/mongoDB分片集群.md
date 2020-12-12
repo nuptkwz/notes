@@ -434,11 +434,153 @@ mkdir -p /mongodb/sharded_cluster/myshardrs01_27418/data/db \ &
 mkdir -p /mongodb/sharded_cluster/myshardrs01_27518/log \ &
 mkdir -p /mongodb/sharded_cluster/myshardrs01_27518/data/db
 ```
+### 新建或修改配置文件
+myshardrs01_27318
+```
+vim /mongodb/sharded_cluster/myshardrs02_27318/mongod.conf
+```
+```
+systemLog:
+  #MongoDB发送所有日志输出的目标指定为文件
+  destination: file
+  #mongod或mongos应向其发送所有诊断日志记录信息的日志文件的路径
+  path: "/mongodb/sharded_cluster/myshardrs02_27318/log/mongod.log"
+  #当mongos或mongod实例重新启动时，mongos或mongod会将新条目附加到现有日志文件的末尾。
+  logAppend: true
+storage:
+  #mongod实例存储其数据的目录。storage.dbPath设置仅适用于mongod
+  dbPath: "/mongodb/sharded_cluster/myshardrs02_27318/data/db"
+  journal:
+    #启用或禁用持久性日志以确保数据文件保持有效和可恢复
+    enabled: true
+processManagement:
+  #启用在后台运行mongos或mongod进程的守护进程模式
+  fork: true
+  #指定用于保存mongos或mongod进程的进程ID的文件位置，其中mongos或mongod将写入其PID
+  pidFilePath: "/mongodb/sharded_cluster/myshardrs02_27318/log/mongod.pid"
+net:
+  #服务实例绑定所有IP，有副作用，副本集初始化的时候，节点名字会自动设置为本地域名，而不是ip
+  #bindIpAll: true
+  #服务实例绑定的IP
+  bindIp: localhost,192.168.30.129
+  #bindIp
+  #绑定的端口
+  port: 27318
+replication:
+  #副本集的名称
+  replSetName: myshardrs02
+sharding:
+  #分片角色
+  clusterRole: shardsv2
+```
+设置sharding.clusterRole需要mongod实例运行复制。 要将实例部署为副本集成员，请使用
+replSetName设置并指定副本集的名称
 
+myshardrs01_27418
+```
+vim /mongodb/sharded_cluster/myshardrs02_27418/mongod.conf
+```
+```
+systemLog:
+  #MongoDB发送所有日志输出的目标指定为文件
+  destination: file
+  #mongod或mongos应向其发送所有诊断日志记录信息的日志文件的路径
+  path: "/mongodb/sharded_cluster/myshardrs02_27418/log/mongod.log"
+  #当mongos或mongod实例重新启动时，mongos或mongod会将新条目附加到现有日志文件的末尾。
+  logAppend: true
+storage:
+  #mongod实例存储其数据的目录。storage.dbPath设置仅适用于mongod
+  dbPath: "/mongodb/sharded_cluster/myshardrs02_27418/data/db"
+  journal:
+    #启用或禁用持久性日志以确保数据文件保持有效和可恢复
+    enabled: true
+processManagement:
+  #启用在后台运行mongos或mongod进程的守护进程模式
+  fork: true
+  #指定用于保存mongos或mongod进程的进程ID的文件位置，其中mongos或mongod将写入其PID
+  pidFilePath: "/mongodb/sharded_cluster/myshardrs02_27418/log/mongod.pid"
+net:
+  #服务实例绑定所有IP，有副作用，副本集初始化的时候，节点名字会自动设置为本地域名，而不是ip
+  #bindIpAll: true
+  #服务实例绑定的IP
+  bindIp: localhost,192.168.30.129
+  #bindIp
+  #绑定的端口
+  port: 27418
+replication:
+  #副本集的名称
+  replSetName: myshardrs02
+sharding:
+  #分片角色
+  clusterRole: shardsv2
+```
 
+myshardrs01_27518
+```
+vim /mongodb/sharded_cluster/myshardrs02_27518/mongod.conf
+```
+```
+systemLog:
+  #MongoDB发送所有日志输出的目标指定为文件
+  destination: file
+  #mongod或mongos应向其发送所有诊断日志记录信息的日志文件的路径
+  path: "/mongodb/sharded_cluster/myshardrs02_27518/log/mongod.log"
+  #当mongos或mongod实例重新启动时，mongos或mongod会将新条目附加到现有日志文件的末尾。
+  logAppend: true
+storage:
+  #mongod实例存储其数据的目录。storage.dbPath设置仅适用于mongod
+  dbPath: "/mongodb/sharded_cluster/myshardrs02_27518/data/db"
+  journal:
+    #启用或禁用持久性日志以确保数据文件保持有效和可恢复
+    enabled: true
+processManagement:
+  #启用在后台运行mongos或mongod进程的守护进程模式
+  fork: true
+  #指定用于保存mongos或mongod进程的进程ID的文件位置，其中mongos或mongod将写入其PID
+  pidFilePath: "/mongodb/sharded_cluster/myshardrs02_27518/log/mongod.pid"
+net:
+  #服务实例绑定所有IP，有副作用，副本集初始化的时候，节点名字会自动设置为本地域名，而不是ip
+  #bindIpAll: true
+  #服务实例绑定的IP
+  bindIp: localhost,192.168.30.129
+  #bindIp
+  #绑定的端口
+  port: 27518
+replication:
+  #副本集的名称
+  replSetName: myshardrs02
+sharding:
+  #分片角色
+  clusterRole: shardsv2
+```
+启动第二套副本集：一主一副本一仲裁
 
-
-
+依次启动三个mongod服务：
+```
+root@keweizhou-virtual-machine:/# /usr/local/mongodb/bin/mongod -f /mongodb/sharded_cluster/myshardrs02_27318/mongod.conf
+about to fork child process, waiting until server is ready for connections.
+forked process: 8814
+child process started successfully, parent exiting
+root@keweizhou-virtual-machine:/# /usr/local/mongodb/bin/mongod -f /mongodb/sharded_cluster/myshardrs02_27418/mongod.conf
+about to fork child process, waiting until server is ready for connections.
+forked process: 8853
+child process started successfully, parent exiting
+root@keweizhou-virtual-machine:/# /usr/local/mongodb/bin/mongod -f /mongodb/sharded_cluster/myshardrs02_27518/mongod.conf
+about to fork child process, waiting until server is ready for connections.
+forked process: 8891
+child process started successfully, parent exiting
+```
+查看服务是否启动：
+```
+root@keweizhou-virtual-machine:/# ps -ef | grep mongod
+root       5773      1  1 00:37 ?        00:02:41 /usr/local/mongodb/bin/mongod -f /mongodb/sharded_cluster/myshardrs01_27018/mongod.conf
+root       5810      1  1 00:37 ?        00:02:36 /usr/local/mongodb/bin/mongod -f /mongodb/sharded_cluster/myshardrs01_27118/mongod.conf
+root       5849      1  1 00:38 ?        00:01:58 /usr/local/mongodb/bin/mongod -f /mongodb/sharded_cluster/myshardrs01_27218/mongod.conf
+root       8814      1  3 03:09 ?        00:00:04 /usr/local/mongodb/bin/mongod -f /mongodb/sharded_cluster/myshardrs02_27318/mongod.conf
+root       8853      1  3 03:10 ?        00:00:04 /usr/local/mongodb/bin/mongod -f /mongodb/sharded_cluster/myshardrs02_27418/mongod.conf
+root       8891      1  3 03:10 ?        00:00:04 /usr/local/mongodb/bin/mongod -f /mongodb/sharded_cluster/myshardrs02_27518/mongod.conf
+root       8933   8753  0 03:12 pts/11   00:00:00 grep --color=auto mongod
+```
 
 
 
