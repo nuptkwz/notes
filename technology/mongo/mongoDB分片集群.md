@@ -421,7 +421,19 @@ myshardrs01:PRIMARY> rs.conf()
         }
 }
 ```
-
+## 第二套副本集
+同样搭建一主一副本一仲裁，相关的配置文件、数据、日志都放在sharded_cluster相应的子目录下面，
+具体步骤如下：
+### 新建副本集数据和日志的目录
+myshardrs02
+```
+mkdir -p /mongodb/sharded_cluster/myshardrs01_27318/log \ &
+mkdir -p /mongodb/sharded_cluster/myshardrs01_27318/data/db \ &
+mkdir -p /mongodb/sharded_cluster/myshardrs01_27418/log \ &
+mkdir -p /mongodb/sharded_cluster/myshardrs01_27418/data/db \ &
+mkdir -p /mongodb/sharded_cluster/myshardrs01_27518/log \ &
+mkdir -p /mongodb/sharded_cluster/myshardrs01_27518/data/db
+```
 
 
 
