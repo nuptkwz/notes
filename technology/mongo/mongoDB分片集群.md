@@ -962,6 +962,545 @@ myshardrs02:PRIMARY> rs.status()
         "operationTime" : Timestamp(1607283482, 1)
 }
 ```
+## 配置节点副本集的创建
+### 准备存放数据data文件和日志的目录
+```
+mkdir -p /mongodb/sharded_cluster/myconfigrs_27019/log \
+mkdir -p /mongodb/sharded_cluster/myconfigrs_27019/data/db \
+
+mkdir -p /mongodb/sharded_cluster/myconfigrs_27119/log \
+mkdir -p /mongodb/sharded_cluster/myconfigrs_27119/data/db \
+
+mkdir -p /mongodb/sharded_cluster/myconfigrs_27219/log \
+mkdir -p /mongodb/sharded_cluster/myconfigrs_27219/data/db
+```
+新建或修改配置文件：
+myconfigrs_27019：
+```
+vim /mongodb/sharded_cluster/myconfigrs_27019/mongod.conf
+```
+```
+systemLog:
+    #MongoDB发送所有日志输出的目标指定为文件
+     destination: file
+    #mongod或mongos应向其发送所有诊断日志记录信息的日志文件的路径
+    path: "/mongodb/sharded_cluster/myconfigrs_27019/log/mongod.log"
+    #当mongos或mongod实例重新启动时，mongos或mongod会将新条目附加到现有
+   日志文件的末尾。
+    logAppend: true
+storage:
+    #mongod实例存储其数据的目录。storage.dbPath设置仅适用于mongod。
+    dbPath: "/mongodb/sharded_cluster/myconfigrs_27019/data/db"
+    journal:
+    #启用或禁用持久性日志以确保数据文件保持有效和可恢复。
+    enabled: true
+processManagement:
+    #启用在后台运行mongos或mongod进程的守护进程模式。
+    fork: true
+    #指定用于保存mongos或mongod进程的进程ID的文件位置，其中mongos或
+   mongod将写入其PID
+    pidFilePath: "/mongodb/sharded_cluster/myconfigrs_27019/log/mongod.pid"
+net:
+    #服务实例绑定所有IP
+    #bindIpAll: true
+   #服务实例绑定的IP
+    bindIp: localhost,192.168. 30.129
+    #绑定的端口
+    port: 27019
+replication:
+    replSetName: myconfigrs
+sharding:
+    clusterRole: configsvr
+```
+新建或修改配置文件：
+myconfigrs_27119
+```
+vim /mongodb/sharded_cluster/myconfigrs_27219/mongod.conf
+```
+```
+systemLog:
+    #MongoDB发送所有日志输出的目标指定为文件
+     destination: file
+    #mongod或mongos应向其发送所有诊断日志记录信息的日志文件的路径
+    path: "/mongodb/sharded_cluster/myconfigrs_27119/log/mongod.log"
+    #当mongos或mongod实例重新启动时，mongos或mongod会将新条目附加到现有
+   日志文件的末尾。
+    logAppend: true
+storage:
+    #mongod实例存储其数据的目录。storage.dbPath设置仅适用于mongod。
+    dbPath: "/mongodb/sharded_cluster/myconfigrs_27119/data/db"
+    journal:
+    #启用或禁用持久性日志以确保数据文件保持有效和可恢复。
+    enabled: true
+processManagement:
+    #启用在后台运行mongos或mongod进程的守护进程模式。
+    fork: true
+    #指定用于保存mongos或mongod进程的进程ID的文件位置，其中mongos或
+   mongod将写入其PID
+    pidFilePath: "/mongodb/sharded_cluster/myconfigrs_27119/log/mongod.pid"
+net:
+    #服务实例绑定所有IP
+    #bindIpAll: true
+   #服务实例绑定的IP
+    bindIp: localhost,192.168. 30.129
+    #绑定的端口
+    port: 27119
+replication:
+    replSetName: myconfigrs
+sharding:
+    clusterRole: configsvr
+```
+新建或修改配置文件：
+myconfigrs_27219
+```
+vim /mongodb/sharded_cluster/myconfigrs_27219/mongod.conf
+```
+```
+systemLog:
+    #MongoDB发送所有日志输出的目标指定为文件
+     destination: file
+    #mongod或mongos应向其发送所有诊断日志记录信息的日志文件的路径
+    path: "/mongodb/sharded_cluster/myconfigrs_27019/log/mongod.log"
+    #当mongos或mongod实例重新启动时，mongos或mongod会将新条目附加到现有
+   日志文件的末尾。
+    logAppend: true
+storage:
+    #mongod实例存储其数据的目录。storage.dbPath设置仅适用于mongod。
+    dbPath: "/mongodb/sharded_cluster/myconfigrs_27019/data/db"
+    journal:
+    #启用或禁用持久性日志以确保数据文件保持有效和可恢复。
+    enabled: true
+processManagement:
+    #启用在后台运行mongos或mongod进程的守护进程模式。
+    fork: true
+    #指定用于保存mongos或mongod进程的进程ID的文件位置，其中mongos或
+   mongod将写入其PID
+    pidFilePath: "/mongodb/sharded_cluster/myconfigrs_27019/log/mongod.pid"
+net:
+    #服务实例绑定所有IP
+    #bindIpAll: true
+   #服务实例绑定的IP
+    bindIp: localhost,192.168. 30.129
+    #绑定的端口
+    port: 27019
+replication:
+    replSetName: myconfigrs
+sharding:
+    clusterRole: configsvr
+```
+依次启动配置的mongod副本集：一主两副本
+```
+/usr/local/mongodb/bin/mongod -f /mongodb/sharded_cluster/myconfigrs_27019/mongod.conf
+/usr/local/mongodb/bin/mongod -f /mongodb/sharded_cluster/myconfigrs_27119/mongod.conf
+/usr/local/mongodb/bin/mongod -f /mongodb/sharded_cluster/myconfigrs_27219/mongod.conf
+```
+查看服务是否启动：
+```
+root@keweizhou-virtual-machine:~# ps -ef | grep mongo
+root       5773      1  1 00:37 ?        00:03:33 /usr/local/mongodb/bin/mongod -f /mongodb/sharded_cluster/myshardrs01_27018/mongod.conf
+root       5810      1  1 00:37 ?        00:03:34 /usr/local/mongodb/bin/mongod -f /mongodb/sharded_cluster/myshardrs01_27118/mongod.conf
+root       5849      1  1 00:38 ?        00:02:39 /usr/local/mongodb/bin/mongod -f /mongodb/sharded_cluster/myshardrs01_27218/mongod.conf
+root       8814      1  1 03:09 ?        00:01:04 /usr/local/mongodb/bin/mongod -f /mongodb/sharded_cluster/myshardrs02_27318/mongod.conf
+root       8853      1  1 03:10 ?        00:00:56 /usr/local/mongodb/bin/mongod -f /mongodb/sharded_cluster/myshardrs02_27418/mongod.conf
+root       8891      1  1 03:10 ?        00:00:45 /usr/local/mongodb/bin/mongod -f /mongodb/sharded_cluster/myshardrs02_27518/mongod.conf
+root      10111  10014  0 04:07 pts/20   00:00:00 vim /mongodb/sharded_cluster/myshardrs01_27018/mongod.conf
+root      10156      1  2 04:11 ?        00:00:07 /usr/local/mongodb/bin/mongod -f /mongodb/sharded_cluster/myconfigrs_27019/mongod.conf
+root      10216      1  2 04:14 ?        00:00:04 /usr/local/mongodb/bin/mongod -f /mongodb/sharded_cluster/myconfigrs_27119/mongod.conf
+root      10264      1  3 04:15 ?        00:00:04 /usr/local/mongodb/bin/mongod -f /mongodb/sharded_cluster/myconfigrs_27219/mongod.conf
+root      10317   9513  0 04:16 pts/19   00:00:00 grep --color=auto mongo
+```
+## 初始化副本集和创建主节点
+* 使用客户端命令连接主节点
+```
+/usr/local/mongodb/bin/mongo --host localhost --port 27019
+```
+* 执行初始化副本集命令：
+```
+ rs.initiate()
+{
+        "info2" : "no configuration specified. Using a default configuration for the set",
+        "me" : "192.168.30.129:27019",
+        "ok" : 1,
+        "$gleStats" : {
+                "lastOpTime" : Timestamp(1607286823, 1),
+                "electionId" : ObjectId("7fffffff0000000000000001")
+        },
+        "lastCommittedOpTime" : Timestamp(0, 0),
+        "$clusterTime" : {
+                "clusterTime" : Timestamp(1607286823, 2),
+                "signature" : {
+                        "hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+                        "keyId" : NumberLong(0)
+                }
+        },
+        "operationTime" : Timestamp(1607286823, 1)
+}
+```
+* 查看副本集情况
+```
+myconfigrs:PRIMARY> rs.status()
+{
+        "set" : "myconfigrs",
+        "date" : ISODate("2020-12-06T20:34:05.938Z"),
+        "myState" : 1,
+        "term" : NumberLong(1),
+        "syncingTo" : "",
+        "syncSourceHost" : "",
+        "syncSourceId" : -1,
+        "configsvr" : true,
+        "heartbeatIntervalMillis" : NumberLong(2000),
+        "majorityVoteCount" : 1,
+        "writeMajorityCount" : 1,
+        "optimes" : {
+                "lastCommittedOpTime" : {
+                        "ts" : Timestamp(1607286841, 1),
+                        "t" : NumberLong(1)
+                },
+                "lastCommittedWallTime" : ISODate("2020-12-06T20:34:01.804Z"),
+                "readConcernMajorityOpTime" : {
+                        "ts" : Timestamp(1607286841, 1),
+                        "t" : NumberLong(1)
+                },
+                "readConcernMajorityWallTime" : ISODate("2020-12-06T20:34:01.804Z"),
+                "appliedOpTime" : {
+                        "ts" : Timestamp(1607286841, 1),
+                        "t" : NumberLong(1)
+                },
+                "durableOpTime" : {
+                        "ts" : Timestamp(1607286841, 1),
+                        "t" : NumberLong(1)
+                },
+                "lastAppliedWallTime" : ISODate("2020-12-06T20:34:01.804Z"),
+                "lastDurableWallTime" : ISODate("2020-12-06T20:34:01.804Z")
+        },
+        "lastStableRecoveryTimestamp" : Timestamp(1607286823, 32),
+        "lastStableCheckpointTimestamp" : Timestamp(1607286823, 32),
+        "electionCandidateMetrics" : {
+                "lastElectionReason" : "electionTimeout",
+                "lastElectionDate" : ISODate("2020-12-06T20:33:43.769Z"),
+                "electionTerm" : NumberLong(1),
+                "lastCommittedOpTimeAtElection" : {
+                        "ts" : Timestamp(0, 0),
+                        "t" : NumberLong(-1)
+                },
+                "lastSeenOpTimeAtElection" : {
+                        "ts" : Timestamp(1607286823, 1),
+                        "t" : NumberLong(-1)
+                },
+                "numVotesNeeded" : 1,
+                "priorityAtElection" : 1,
+                "electionTimeoutMillis" : NumberLong(10000),
+                "newTermStartDate" : ISODate("2020-12-06T20:33:43.781Z"),
+                "wMajorityWriteAvailabilityDate" : ISODate("2020-12-06T20:33:43.892Z")
+        },
+        "members" : [
+                {
+                        "_id" : 0,
+                        "name" : "192.168.30.129:27019",
+                        "health" : 1,
+                        "state" : 1,
+                        "stateStr" : "PRIMARY",
+                        "uptime" : 1330,
+                        "optime" : {
+                                "ts" : Timestamp(1607286841, 1),
+                                "t" : NumberLong(1)
+                        },
+                        "optimeDate" : ISODate("2020-12-06T20:34:01Z"),
+                        "syncingTo" : "",
+                        "syncSourceHost" : "",
+                        "syncSourceId" : -1,
+                        "infoMessage" : "",
+                        "electionTime" : Timestamp(1607286823, 2),
+                        "electionDate" : ISODate("2020-12-06T20:33:43Z"),
+                        "configVersion" : 1,
+                        "self" : true,
+                        "lastHeartbeatMessage" : ""
+                }
+        ],
+        "ok" : 1,
+        "$gleStats" : {
+                "lastOpTime" : Timestamp(1607286823, 1),
+                "electionId" : ObjectId("7fffffff0000000000000001")
+        },
+        "lastCommittedOpTime" : Timestamp(1607286841, 1),
+        "$clusterTime" : {
+                "clusterTime" : Timestamp(1607286841, 1),
+                "signature" : {
+                        "hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+                        "keyId" : NumberLong(0)
+                }
+        },
+        "operationTime" : Timestamp(1607286841, 1)
+}
+```
+* 主节点配置查看
+```
+myconfigrs:PRIMARY> rs.config()
+{
+        "_id" : "myconfigrs",
+        "version" : 1,
+        "configsvr" : true,
+        "protocolVersion" : NumberLong(1),
+        "writeConcernMajorityJournalDefault" : true,
+        "members" : [
+                {
+                        "_id" : 0,
+                        "host" : "192.168.30.129:27019",
+                        "arbiterOnly" : false,
+                        "buildIndexes" : true,
+                        "hidden" : false,
+                        "priority" : 1,
+                        "tags" : {
+
+                        },
+                        "slaveDelay" : NumberLong(0),
+                        "votes" : 1
+                }
+        ],
+        "settings" : {
+                "chainingAllowed" : true,
+                "heartbeatIntervalMillis" : 2000,
+                "heartbeatTimeoutSecs" : 10,
+                "electionTimeoutMillis" : 10000,
+                "catchUpTimeoutMillis" : -1,
+                "catchUpTakeoverDelayMillis" : 30000,
+                "getLastErrorModes" : {
+
+                },
+                "getLastErrorDefaults" : {
+                        "w" : 1,
+                        "wtimeout" : 0
+                },
+                "replicaSetId" : ObjectId("5fcd40279fe937f6ca2c75a2")
+        }
+}
+```
+* 添加两个副本节点
+```
+rs.add("192.168.30.129:27119")
+rs.add("192.168.30.129:27219")
+```
+* 查看副本集的配置配置情况
+```
+myconfigrs:PRIMARY> rs.conf()
+{
+        "_id" : "myconfigrs",
+        "version" : 3,
+        "configsvr" : true,
+        "protocolVersion" : NumberLong(1),
+        "writeConcernMajorityJournalDefault" : true,
+        "members" : [
+                {
+                        "_id" : 0,
+                        "host" : "192.168.30.129:27019",
+                        "arbiterOnly" : false,
+                        "buildIndexes" : true,
+                        "hidden" : false,
+                        "priority" : 1,
+                        "tags" : {
+
+                        },
+                        "slaveDelay" : NumberLong(0),
+                        "votes" : 1
+                },
+                {
+                        "_id" : 1,
+                        "host" : "192.168.30.129:27119",
+                        "arbiterOnly" : false,
+                        "buildIndexes" : true,
+                        "hidden" : false,
+                        "priority" : 1,
+                        "tags" : {
+
+                        },
+                        "slaveDelay" : NumberLong(0),
+                        "votes" : 1
+                },
+                {
+                        "_id" : 2,
+                        "host" : "192.168.30.129:27219",
+                        "arbiterOnly" : false,
+                        "buildIndexes" : true,
+                        "hidden" : false,
+                        "priority" : 1,
+                        "tags" : {
+
+                        },
+                        "slaveDelay" : NumberLong(0),
+                        "votes" : 1
+                }
+        ],
+        "settings" : {
+                "chainingAllowed" : true,
+                "heartbeatIntervalMillis" : 2000,
+                "heartbeatTimeoutSecs" : 10,
+                "electionTimeoutMillis" : 10000,
+                "catchUpTimeoutMillis" : -1,
+                "catchUpTakeoverDelayMillis" : 30000,
+                "getLastErrorModes" : {
+
+                },
+                "getLastErrorDefaults" : {
+                        "w" : 1,
+                        "wtimeout" : 0
+                },
+                "replicaSetId" : ObjectId("5fcd40279fe937f6ca2c75a2")
+        }
+}
+myconfigrs:PRIMARY> rs.status()
+{
+        "set" : "myconfigrs",
+        "date" : ISODate("2020-12-06T20:43:19.377Z"),
+        "myState" : 1,
+        "term" : NumberLong(1),
+        "syncingTo" : "",
+        "syncSourceHost" : "",
+        "syncSourceId" : -1,
+        "configsvr" : true,
+        "heartbeatIntervalMillis" : NumberLong(2000),
+        "majorityVoteCount" : 2,
+        "writeMajorityCount" : 2,
+        "optimes" : {
+                "lastCommittedOpTime" : {
+                        "ts" : Timestamp(1607287393, 1),
+                        "t" : NumberLong(1)
+                },
+                "lastCommittedWallTime" : ISODate("2020-12-06T20:43:13.944Z"),
+                "readConcernMajorityOpTime" : {
+                        "ts" : Timestamp(1607287393, 1),
+                        "t" : NumberLong(1)
+                },
+                "readConcernMajorityWallTime" : ISODate("2020-12-06T20:43:13.944Z"),
+                "appliedOpTime" : {
+                        "ts" : Timestamp(1607287393, 1),
+                        "t" : NumberLong(1)
+                },
+                "durableOpTime" : {
+                        "ts" : Timestamp(1607287393, 1),
+                        "t" : NumberLong(1)
+                },
+                "lastAppliedWallTime" : ISODate("2020-12-06T20:43:13.944Z"),
+                "lastDurableWallTime" : ISODate("2020-12-06T20:43:13.944Z")
+        },
+        "lastStableRecoveryTimestamp" : Timestamp(1607287363, 1),
+        "lastStableCheckpointTimestamp" : Timestamp(1607287363, 1),
+        "electionCandidateMetrics" : {
+                "lastElectionReason" : "electionTimeout",
+                "lastElectionDate" : ISODate("2020-12-06T20:33:43.769Z"),
+                "electionTerm" : NumberLong(1),
+                "lastCommittedOpTimeAtElection" : {
+                        "ts" : Timestamp(0, 0),
+                        "t" : NumberLong(-1)
+                },
+                "lastSeenOpTimeAtElection" : {
+                        "ts" : Timestamp(1607286823, 1),
+                        "t" : NumberLong(-1)
+                },
+                "numVotesNeeded" : 1,
+                "priorityAtElection" : 1,
+                "electionTimeoutMillis" : NumberLong(10000),
+                "newTermStartDate" : ISODate("2020-12-06T20:33:43.781Z"),
+                "wMajorityWriteAvailabilityDate" : ISODate("2020-12-06T20:33:43.892Z")
+        },
+        "members" : [
+                {
+                        "_id" : 0,
+                        "name" : "192.168.30.129:27019",
+                        "health" : 1,
+                        "state" : 1,
+                        "stateStr" : "PRIMARY",
+                        "uptime" : 1884,
+                        "optime" : {
+                                "ts" : Timestamp(1607287393, 1),
+                                "t" : NumberLong(1)
+                        },
+                        "optimeDate" : ISODate("2020-12-06T20:43:13Z"),
+                        "syncingTo" : "",
+                        "syncSourceHost" : "",
+                        "syncSourceId" : -1,
+                        "infoMessage" : "",
+                        "electionTime" : Timestamp(1607286823, 2),
+                        "electionDate" : ISODate("2020-12-06T20:33:43Z"),
+                        "configVersion" : 3,
+                        "self" : true,
+                        "lastHeartbeatMessage" : ""
+                },
+                {
+                        "_id" : 1,
+                        "name" : "192.168.30.129:27119",
+                        "health" : 1,
+                        "state" : 2,
+                        "stateStr" : "SECONDARY",
+                        "uptime" : 152,
+                        "optime" : {
+                                "ts" : Timestamp(1607287393, 1),
+                                "t" : NumberLong(1)
+                        },
+                        "optimeDurable" : {
+                                "ts" : Timestamp(1607287393, 1),
+                                "t" : NumberLong(1)
+                        },
+                        "optimeDate" : ISODate("2020-12-06T20:43:13Z"),
+                        "optimeDurableDate" : ISODate("2020-12-06T20:43:13Z"),
+                        "lastHeartbeat" : ISODate("2020-12-06T20:43:18.273Z"),
+                        "lastHeartbeatRecv" : ISODate("2020-12-06T20:43:19.304Z"),
+                        "pingMs" : NumberLong(0),
+                        "lastHeartbeatMessage" : "",
+                        "syncingTo" : "192.168.30.129:27219",
+                        "syncSourceHost" : "192.168.30.129:27219",
+                        "syncSourceId" : 2,
+                        "infoMessage" : "",
+                        "configVersion" : 3
+                },
+                {
+                        "_id" : 2,
+                        "name" : "192.168.30.129:27219",
+                        "health" : 1,
+                        "state" : 2,
+                        "stateStr" : "SECONDARY",
+                        "uptime" : 135,
+                        "optime" : {
+                                "ts" : Timestamp(1607287393, 1),
+                                "t" : NumberLong(1)
+                        },
+                        "optimeDurable" : {
+                                "ts" : Timestamp(1607287393, 1),
+                                "t" : NumberLong(1)
+                        },
+                        "optimeDate" : ISODate("2020-12-06T20:43:13Z"),
+                        "optimeDurableDate" : ISODate("2020-12-06T20:43:13Z"),
+                        "lastHeartbeat" : ISODate("2020-12-06T20:43:18.273Z"),
+                        "lastHeartbeatRecv" : ISODate("2020-12-06T20:43:18.504Z"),
+                        "pingMs" : NumberLong(0),
+                        "lastHeartbeatMessage" : "",
+                        "syncingTo" : "192.168.30.129:27019",
+                        "syncSourceHost" : "192.168.30.129:27019",
+                        "syncSourceId" : 0,
+                        "infoMessage" : "",
+                        "configVersion" : 3
+                }
+        ],
+        "ok" : 1,
+        "$gleStats" : {
+                "lastOpTime" : {
+                        "ts" : Timestamp(1607287264, 1),
+                        "t" : NumberLong(1)
+                },
+                "electionId" : ObjectId("7fffffff0000000000000001")
+        },
+        "lastCommittedOpTime" : Timestamp(1607287393, 1),
+        "$clusterTime" : {
+                "clusterTime" : Timestamp(1607287393, 1),
+                "signature" : {
+                        "hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+                        "keyId" : NumberLong(0)
+                }
+        },
+        "operationTime" : Timestamp(1607287393, 1)
+}
+```
+# 路由
+
 
 
 
