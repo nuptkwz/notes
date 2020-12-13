@@ -581,6 +581,391 @@ root       8853      1  3 03:10 ?        00:00:04 /usr/local/mongodb/bin/mongod 
 root       8891      1  3 03:10 ?        00:00:04 /usr/local/mongodb/bin/mongod -f /mongodb/sharded_cluster/myshardrs02_27518/mongod.conf
 root       8933   8753  0 03:12 pts/11   00:00:00 grep --color=auto mongod
 ```
+### 初始化副本集
+#### 初始化副本集和创建主节点
+* 使用客户端命令连接主节点
+```
+/usr/local/mongodb/bin/mongo --host localhost --port 27318
+```
+* 执行初始化副本集命令,查看副本集情况：
+```
+ > rs.initiate()
+{
+        "info2" : "no configuration specified. Using a default configuration for the set",
+        "me" : "192.168.30.129:27318",
+        "ok" : 1,
+        "$clusterTime" : {
+                "clusterTime" : Timestamp(1607283102, 1),
+                "signature" : {
+                        "hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+                        "keyId" : NumberLong(0)
+                }
+        },
+        "operationTime" : Timestamp(1607283102, 1)
+}
+myshardrs02:SECONDARY> rs.status()
+{
+        "set" : "myshardrs02",
+        "date" : ISODate("2020-12-06T19:32:26.089Z"),
+        "myState" : 1,
+        "term" : NumberLong(1),
+        "syncingTo" : "",
+        "syncSourceHost" : "",
+        "syncSourceId" : -1,
+        "heartbeatIntervalMillis" : NumberLong(2000),
+        "majorityVoteCount" : 1,
+        "writeMajorityCount" : 1,
+        "optimes" : {
+                "lastCommittedOpTime" : {
+                        "ts" : Timestamp(1607283142, 1),
+                        "t" : NumberLong(1)
+                },
+                "lastCommittedWallTime" : ISODate("2020-12-06T19:32:22.128Z"),
+                "readConcernMajorityOpTime" : {
+                        "ts" : Timestamp(1607283142, 1),
+                        "t" : NumberLong(1)
+                },
+                "readConcernMajorityWallTime" : ISODate("2020-12-06T19:32:22.128Z"),
+                "appliedOpTime" : {
+                        "ts" : Timestamp(1607283142, 1),
+                        "t" : NumberLong(1)
+                },
+                "durableOpTime" : {
+                        "ts" : Timestamp(1607283142, 1),
+                        "t" : NumberLong(1)
+                },
+                "lastAppliedWallTime" : ISODate("2020-12-06T19:32:22.128Z"),
+                "lastDurableWallTime" : ISODate("2020-12-06T19:32:22.128Z")
+        },
+        "lastStableRecoveryTimestamp" : Timestamp(1607283102, 4),
+        "lastStableCheckpointTimestamp" : Timestamp(1607283102, 4),
+        "electionCandidateMetrics" : {
+                "lastElectionReason" : "electionTimeout",
+                "lastElectionDate" : ISODate("2020-12-06T19:31:42.101Z"),
+                "electionTerm" : NumberLong(1),
+                "lastCommittedOpTimeAtElection" : {
+                        "ts" : Timestamp(0, 0),
+                        "t" : NumberLong(-1)
+                },
+                "lastSeenOpTimeAtElection" : {
+                        "ts" : Timestamp(1607283102, 1),
+                        "t" : NumberLong(-1)
+                },
+                "numVotesNeeded" : 1,
+                "priorityAtElection" : 1,
+                "electionTimeoutMillis" : NumberLong(10000),
+                "newTermStartDate" : ISODate("2020-12-06T19:31:42.124Z"),
+                "wMajorityWriteAvailabilityDate" : ISODate("2020-12-06T19:31:42.127Z")
+        },
+        "members" : [
+                {
+                        "_id" : 0,
+                        "name" : "192.168.30.129:27318",
+                        "health" : 1,
+                        "state" : 1,
+                        "stateStr" : "PRIMARY",
+                        "uptime" : 1366,
+                        "optime" : {
+                                "ts" : Timestamp(1607283142, 1),
+                                "t" : NumberLong(1)
+                        },
+                        "optimeDate" : ISODate("2020-12-06T19:32:22Z"),
+                        "syncingTo" : "",
+                        "syncSourceHost" : "",
+                        "syncSourceId" : -1,
+                        "infoMessage" : "",
+                        "electionTime" : Timestamp(1607283102, 2),
+                        "electionDate" : ISODate("2020-12-06T19:31:42Z"),
+                        "configVersion" : 1,
+                        "self" : true,
+                        "lastHeartbeatMessage" : ""
+                }
+        ],
+        "ok" : 1,
+        "$clusterTime" : {
+                "clusterTime" : Timestamp(1607283142, 1),
+                "signature" : {
+                        "hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+                        "keyId" : NumberLong(0)
+                }
+        },
+        "operationTime" : Timestamp(1607283142, 1)
+}
+```
+* 主节点配置查看
+```
+myshardrs02:PRIMARY> rs.conf()
+{
+        "_id" : "myshardrs02",
+        "version" : 1,
+        "protocolVersion" : NumberLong(1),
+        "writeConcernMajorityJournalDefault" : true,
+        "members" : [
+                {
+                        "_id" : 0,
+                        "host" : "192.168.30.129:27318",
+                        "arbiterOnly" : false,
+                        "buildIndexes" : true,
+                        "hidden" : false,
+                        "priority" : 1,
+                        "tags" : {
+
+                        },
+                        "slaveDelay" : NumberLong(0),
+                        "votes" : 1
+                }
+        ],
+        "settings" : {
+                "chainingAllowed" : true,
+                "heartbeatIntervalMillis" : 2000,
+                "heartbeatTimeoutSecs" : 10,
+                "electionTimeoutMillis" : 10000,
+                "catchUpTimeoutMillis" : -1,
+                "catchUpTakeoverDelayMillis" : 30000,
+                "getLastErrorModes" : {
+
+                },
+                "getLastErrorDefaults" : {
+                        "w" : 1,
+                        "wtimeout" : 0
+                },
+                "replicaSetId" : ObjectId("5fcd319d2790e96839e1982f")
+        }
+}
+```
+* 添加副本节点
+```
+myshardrs02:PRIMARY> rs.add("192.168.30.129:27418")
+{
+        "ok" : 1,
+        "$clusterTime" : {
+                "clusterTime" : Timestamp(1607283321, 1),
+                "signature" : {
+                        "hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+                        "keyId" : NumberLong(0)
+                }
+        },
+        "operationTime" : Timestamp(1607283321, 1)
+}
+```
+* 添加仲裁节点
+```
+myshardrs02:PRIMARY> rs.addArb("192.168.30.129:27518")
+{
+        "ok" : 1,
+        "$clusterTime" : {
+                "clusterTime" : Timestamp(1607283403, 1),
+                "signature" : {
+                        "hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+                        "keyId" : NumberLong(0)
+                }
+        },
+        "operationTime" : Timestamp(1607283403, 1)
+}
+```
+* 查看副本集的配置情况
+```
+myshardrs02:PRIMARY> rs.conf()
+{
+        "_id" : "myshardrs02",
+        "version" : 3,
+        "protocolVersion" : NumberLong(1),
+        "writeConcernMajorityJournalDefault" : true,
+        "members" : [
+                {
+                        "_id" : 0,
+                        "host" : "192.168.30.129:27318",
+                        "arbiterOnly" : false,
+                        "buildIndexes" : true,
+                        "hidden" : false,
+                        "priority" : 1,
+                        "tags" : {
+
+                        },
+                        "slaveDelay" : NumberLong(0),
+                        "votes" : 1
+                },
+                {
+                        "_id" : 1,
+                        "host" : "192.168.30.129:27418",
+                        "arbiterOnly" : false,
+                        "buildIndexes" : true,
+                        "hidden" : false,
+                        "priority" : 1,
+                        "tags" : {
+
+                        },
+                        "slaveDelay" : NumberLong(0),
+                        "votes" : 1
+                },
+                {
+                        "_id" : 2,
+                        "host" : "192.168.30.129:27518",
+                        "arbiterOnly" : true,
+                        "buildIndexes" : true,
+                        "hidden" : false,
+                        "priority" : 0,
+                        "tags" : {
+
+                        },
+                        "slaveDelay" : NumberLong(0),
+                        "votes" : 1
+                }
+        ],
+        "settings" : {
+                "chainingAllowed" : true,
+                "heartbeatIntervalMillis" : 2000,
+                "heartbeatTimeoutSecs" : 10,
+                "electionTimeoutMillis" : 10000,
+                "catchUpTimeoutMillis" : -1,
+                "catchUpTakeoverDelayMillis" : 30000,
+                "getLastErrorModes" : {
+
+                },
+                "getLastErrorDefaults" : {
+                        "w" : 1,
+                        "wtimeout" : 0
+                },
+                "replicaSetId" : ObjectId("5fcd319d2790e96839e1982f")
+        }
+}
+myshardrs02:PRIMARY> rs.status()
+{
+        "set" : "myshardrs02",
+        "date" : ISODate("2020-12-06T19:38:11.227Z"),
+        "myState" : 1,
+        "term" : NumberLong(1),
+        "syncingTo" : "",
+        "syncSourceHost" : "",
+        "syncSourceId" : -1,
+        "heartbeatIntervalMillis" : NumberLong(2000),
+        "majorityVoteCount" : 2,
+        "writeMajorityCount" : 2,
+        "optimes" : {
+                "lastCommittedOpTime" : {
+                        "ts" : Timestamp(1607283482, 1),
+                        "t" : NumberLong(1)
+                },
+                "lastCommittedWallTime" : ISODate("2020-12-06T19:38:02.401Z"),
+                "readConcernMajorityOpTime" : {
+                        "ts" : Timestamp(1607283482, 1),
+                        "t" : NumberLong(1)
+                },
+                "readConcernMajorityWallTime" : ISODate("2020-12-06T19:38:02.401Z"),
+                "appliedOpTime" : {
+                        "ts" : Timestamp(1607283482, 1),
+                        "t" : NumberLong(1)
+                },
+                "durableOpTime" : {
+                        "ts" : Timestamp(1607283482, 1),
+                        "t" : NumberLong(1)
+                },
+                "lastAppliedWallTime" : ISODate("2020-12-06T19:38:02.401Z"),
+                "lastDurableWallTime" : ISODate("2020-12-06T19:38:02.401Z")
+        },
+        "lastStableRecoveryTimestamp" : Timestamp(1607283452, 1),
+        "lastStableCheckpointTimestamp" : Timestamp(1607283452, 1),
+        "electionCandidateMetrics" : {
+                "lastElectionReason" : "electionTimeout",
+                "lastElectionDate" : ISODate("2020-12-06T19:31:42.101Z"),
+                "electionTerm" : NumberLong(1),
+                "lastCommittedOpTimeAtElection" : {
+                        "ts" : Timestamp(0, 0),
+                        "t" : NumberLong(-1)
+                },
+                "lastSeenOpTimeAtElection" : {
+                        "ts" : Timestamp(1607283102, 1),
+                        "t" : NumberLong(-1)
+                },
+                "numVotesNeeded" : 1,
+                "priorityAtElection" : 1,
+                "electionTimeoutMillis" : NumberLong(10000),
+                "newTermStartDate" : ISODate("2020-12-06T19:31:42.124Z"),
+                "wMajorityWriteAvailabilityDate" : ISODate("2020-12-06T19:31:42.127Z")
+        },
+        "members" : [
+                {
+                        "_id" : 0,
+                        "name" : "192.168.30.129:27318",
+                        "health" : 1,
+                        "state" : 1,
+                        "stateStr" : "PRIMARY",
+                        "uptime" : 1711,
+                        "optime" : {
+                                "ts" : Timestamp(1607283482, 1),
+                                "t" : NumberLong(1)
+                        },
+                        "optimeDate" : ISODate("2020-12-06T19:38:02Z"),
+                        "syncingTo" : "",
+                        "syncSourceHost" : "",
+                        "syncSourceId" : -1,
+                        "infoMessage" : "",
+                        "electionTime" : Timestamp(1607283102, 2),
+                        "electionDate" : ISODate("2020-12-06T19:31:42Z"),
+                        "configVersion" : 3,
+                        "self" : true,
+                        "lastHeartbeatMessage" : ""
+                },
+                {
+                        "_id" : 1,
+                        "name" : "192.168.30.129:27418",
+                        "health" : 1,
+                        "state" : 2,
+                        "stateStr" : "SECONDARY",
+                        "uptime" : 169,
+                        "optime" : {
+                                "ts" : Timestamp(1607283482, 1),
+                                "t" : NumberLong(1)
+                        },
+                        "optimeDurable" : {
+                                "ts" : Timestamp(1607283482, 1),
+                                "t" : NumberLong(1)
+                        },
+                        "optimeDate" : ISODate("2020-12-06T19:38:02Z"),
+                        "optimeDurableDate" : ISODate("2020-12-06T19:38:02Z"),
+                        "lastHeartbeat" : ISODate("2020-12-06T19:38:09.974Z"),
+                        "lastHeartbeatRecv" : ISODate("2020-12-06T19:38:11.133Z"),
+                        "pingMs" : NumberLong(0),
+                        "lastHeartbeatMessage" : "",
+                        "syncingTo" : "192.168.30.129:27318",
+                        "syncSourceHost" : "192.168.30.129:27318",
+                        "syncSourceId" : 0,
+                        "infoMessage" : "",
+                        "configVersion" : 3
+                },
+                {
+                        "_id" : 2,
+                        "name" : "192.168.30.129:27518",
+                        "health" : 1,
+                        "state" : 7,
+                        "stateStr" : "ARBITER",
+                        "uptime" : 87,
+                        "lastHeartbeat" : ISODate("2020-12-06T19:38:09.980Z"),
+                        "lastHeartbeatRecv" : ISODate("2020-12-06T19:38:10.134Z"),
+                        "pingMs" : NumberLong(0),
+                        "lastHeartbeatMessage" : "",
+                        "syncingTo" : "",
+                        "syncSourceHost" : "",
+                        "syncSourceId" : -1,
+                        "infoMessage" : "",
+                        "configVersion" : 3
+                }
+        ],
+        "ok" : 1,
+        "$clusterTime" : {
+                "clusterTime" : Timestamp(1607283482, 1),
+                "signature" : {
+                        "hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+                        "keyId" : NumberLong(0)
+                }
+        },
+        "operationTime" : Timestamp(1607283482, 1)
+}
+```
+
+
+
+
 
 
 
