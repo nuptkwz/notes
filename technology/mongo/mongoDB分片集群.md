@@ -1542,6 +1542,75 @@ sharding:
 ```
 /usr/local/mongodb/bin/mongo --host localhost --port 27017
 ```
+此时写入数据会报Database db could not be created :: caused by :: No shards found，错误，原因是通过路由节点操作，现在只是连接了配置节点，还没有连接分片数据节点，因此无法写入业务数据。如下：
+```
+mongos> use db
+switched to db db
+mongos> db.test.insert({a:"aaa"})
+WriteCommandError({
+        "ok" : 0,
+        "errmsg" : "unable to initialize targeter for write op for collection db.test :: caused by :: Database db could not be created :: caused by :: No shards found",
+        "code" : 70,
+        "codeName" : "ShardNotFound",
+        "operationTime" : Timestamp(1607294201, 2),
+        "$clusterTime" : {
+                "clusterTime" : Timestamp(1607294201, 2),
+                "signature" : {
+                        "hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+                        "keyId" : NumberLong(0)
+                }
+        }
+})
+```
+## 在路由节点上进行分片操作
+使用sh.addShard("IP:Port")命令添加分片
+* 将第一套副本集添加进来：
+```
+mongos> sh.addShard("myshardrs01/192.168.30.129:27018,192.168.30.129:27118,192.168.30.129:27218")
+{
+        "shardAdded" : "myshardrs01",
+        "ok" : 1,
+        "operationTime" : Timestamp(1607294744, 6),
+        "$clusterTime" : {
+                "clusterTime" : Timestamp(1607294744, 6),
+                "signature" : {
+                        "hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+                        "keyId" : NumberLong(0)
+                }
+        }
+}
+```
+* 查看分片状态情况：
+```
+mongos> sh.status()
+--- Sharding Status ---
+  sharding version: {
+        "_id" : 1,
+        "minCompatibleVersion" : 5,
+        "currentVersion" : 6,
+        "clusterId" : ObjectId("5fcd40279fe937f6ca2c75b1")
+  }
+  shards:
+        {  "_id" : "myshardrs01",  "host" : "myshardrs01/192.168.30.129:27018,192.168.30.129:27118",  "state" : 1 }
+  active mongoses:
+        "4.2.8" : 1
+  autosplit:
+        Currently enabled: yes
+  balancer:
+        Currently enabled:  yes
+        Currently running:  no
+        Failed balancer rounds in last 5 attempts:  0
+        Migration Results for the last 24 hours:
+                No recent migrations
+  databases:
+        {  "_id" : "config",  "primary" : "config",  "partitioned" : true }
+
+```
+
+
+
+
+
 
 
 
