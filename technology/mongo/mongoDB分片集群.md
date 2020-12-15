@@ -1500,6 +1500,49 @@ myconfigrs:PRIMARY> rs.status()
 }
 ```
 # 路由节点的创建和操作
+## 第一个路由节点的创建和连接
+* 准备存放数据和日志的目录，mymongos_27017节点：
+```
+mkdir -p /mongodb/sharded_cluster/mymongos_27017/log
+```
+* 新建或修改配置文件：
+```
+vim /mongodb/sharded_cluster/mymongos_27017/mongos.conf
+```
+```
+systemLog:
+    #MongoDB发送所有日志输出的目标指定为文件
+    destination: file
+    #mongod或mongos应向其发送所有诊断日志记录信息的日志文件的路径
+    path: "/mongodb/sharded_cluster/mymongos_27017/log/mongod.log"
+    #当mongos或mongod实例重新启动时，mongos或mongod会将新条目附加到现有日志文件的末尾。
+    logAppend: true
+processManagement:
+    #启用在后台运行mongos或mongod进程的守护进程模式。
+    fork: true
+    #指定用于保存mongos或mongod进程的进程ID的文件位置，其中mongos或mongod将写入其PID
+    pidFilePath: /mongodb/sharded_cluster/mymongos_27017/log/mongod.pid"
+net:
+    #服务实例绑定所有IP，有副作用，副本集初始化的时候，节点名字会自动设置为本地域名，而不是ip
+    #bindIpAll: true
+    #服务实例绑定的IP
+    bindIp: localhost,192.168.30.129
+    #bindIp
+    #绑定的端口
+    port: 27017
+sharding:
+    #指定配置节点副本集
+    configDB: myconfigrs/192.168.30.129:27019,192.168.30.129:27119,192.168.30.129:27219
+```
+* 启动mongos：
+```
+/usr/local/mongodb/bin/mongos -f /mongodb/sharded_cluster/mymongos_27017/mongos.conf
+```
+* 客户端登录mongos
+```
+/usr/local/mongodb/bin/mongo --host localhost --port 27017
+```
+
 
 
 
