@@ -1564,7 +1564,7 @@ WriteCommandError({
 ```
 ## 在路由节点上进行分片操作
 使用sh.addShard("IP:Port")命令添加分片
-* 将第一套副本集添加进来：
+### 将第一套副本集添加进来：
 ```
 mongos> sh.addShard("myshardrs01/192.168.30.129:27018,192.168.30.129:27118,192.168.30.129:27218")
 {
@@ -1580,7 +1580,7 @@ mongos> sh.addShard("myshardrs01/192.168.30.129:27018,192.168.30.129:27118,192.1
         }
 }
 ```
-* 查看分片状态：
+* 查看分片状态情况：
 ```
 mongos> sh.status()
 --- Sharding Status ---
@@ -1606,6 +1606,63 @@ mongos> sh.status()
         {  "_id" : "config",  "primary" : "config",  "partitioned" : true }
 
 ```
+### 将第二套分片副本集添加进来
+```
+
+mongos> sh.addShard("myshardrs02/192.168.30.129:27318,192.168.30.129:27418,192.168.30.129:27518")
+{
+        "shardAdded" : "myshardrs02",
+        "ok" : 1,
+        "operationTime" : Timestamp(1607302989, 5),
+        "$clusterTime" : {
+                "clusterTime" : Timestamp(1607302989, 5),
+                "signature" : {
+                        "hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+                        "keyId" : NumberLong(0)
+                }
+        }
+}
+```
+* 查看分片状态：
+```
+mongos> sh.status()
+--- Sharding Status ---
+  sharding version: {
+        "_id" : 1,
+        "minCompatibleVersion" : 5,
+        "currentVersion" : 6,
+        "clusterId" : ObjectId("5fcd40279fe937f6ca2c75b1")
+  }
+  shards:
+        {  "_id" : "myshardrs01",  "host" : "myshardrs01/192.168.30.129:27018,192.168.30.129:27118",  "state" : 1 }
+        {  "_id" : "myshardrs02",  "host" : "myshardrs02/192.168.30.129:27318,192.168.30.129:27418",  "state" : 1 }
+  active mongoses:
+        "4.2.8" : 1
+  autosplit:
+        Currently enabled: yes
+  balancer:
+        Currently enabled:  yes
+        Currently running:  no
+        Failed balancer rounds in last 5 attempts:  0
+        Migration Results for the last 24 hours:
+                16 : Success
+  databases:
+        {  "_id" : "config",  "primary" : "config",  "partitioned" : true }
+                config.system.sessions
+                        shard key: { "_id" : 1 }
+                        unique: false
+                        balancing: true
+                        chunks:
+                                myshardrs01     1008
+                                myshardrs02     16
+                        too many chunks to print, use verbose if you want to force print
+```
+如图所示即添加成功了，如果添加分片失败，需要手动移除分片，检查添加分片的信息正确性后，再次添加分片，移除分片的命令为：
+```
+user admin
+db.runCommand({removeShard:"myshardrs02"})
+```
+如果只剩下最后一个shard，是无法删除的，移除时会自动转移分片数据，需要一个时间的过程，完成后再次执行删除分片命令才能真正删除
 
 
 
