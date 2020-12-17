@@ -1580,7 +1580,7 @@ mongos> sh.addShard("myshardrs01/192.168.30.129:27018,192.168.30.129:27118,192.1
         }
 }
 ```
-* 查看分片状态情况：
+* 查看分片状态：
 ```
 mongos> sh.status()
 --- Sharding Status ---
