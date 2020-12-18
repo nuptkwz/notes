@@ -1664,6 +1664,9 @@ db.runCommand({removeShard:"myshardrs02"})
 ```
 如果只剩下最后一个shard，是无法删除的，移除时会自动转移分片数据，需要一个时间的过程，完成后再次执行删除分片命令才能真正删除
 
+* 开启分片功能：
+sh.enabledSharding("库名")、sh.shardCollection("库名.集合名",{"key":1}),在mongos上的articledb
+数据库配置sharding
 
 
 
