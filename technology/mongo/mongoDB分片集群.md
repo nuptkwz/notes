@@ -1663,10 +1663,84 @@ user admin
 db.runCommand({removeShard:"myshardrs02"})
 ```
 如果只剩下最后一个shard，是无法删除的，移除时会自动转移分片数据，需要一个时间的过程，完成后再次执行删除分片命令才能真正删除
+* 开启分片功能查看分片状态
+sh.enableSharding("库名")、sh.shardCollection("库名.集合名",{"key":1})
+在mongos上的articledb数据库配置sharding:
+开启分片功能
+```
+mongos> sh.enableSharding("articledb")
+{
+        "ok" : 1,
+        "operationTime" : Timestamp(1607309697, 7),
+        "$clusterTime" : {
+                "clusterTime" : Timestamp(1607309697, 7),
+                "signature" : {
+                        "hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+                        "keyId" : NumberLong(0)
+                }
+        }
+}
+```
+查看分片状态：
+```
+mongos> sh.status()
+--- Sharding Status ---
+  sharding version: {
+        "_id" : 1,
+        "minCompatibleVersion" : 5,
+        "currentVersion" : 6,
+        "clusterId" : ObjectId("5fcd40279fe937f6ca2c75b1")
+  }
+  shards:
+        {  "_id" : "myshardrs01",  "host" : "myshardrs01/192.168.30.129:27018,192.168.30.129:27118",  "state" : 1 }
+        {  "_id" : "myshardrs02",  "host" : "myshardrs02/192.168.30.129:27318,192.168.30.129:27418",  "state" : 1 }
+  active mongoses:
+        "4.2.8" : 1
+  autosplit:
+        Currently enabled: yes
+  balancer:
+        Currently enabled:  yes
+        Currently running:  no
+        Failed balancer rounds in last 5 attempts:  0
+        Migration Results for the last 24 hours:
+                512 : Success
+  databases:
+        {  "_id" : "articledb",  "primary" : "myshardrs02",  "partitioned" : true,  "version" : {  "uuid" : UUID("dd46e3d4-33d8-4702-b6a7-50b1c758f6f9"),  "lastMod" : 1 } }
+        {  "_id" : "config",  "primary" : "config",  "partitioned" : true }
+                config.system.sessions
+                        shard key: { "_id" : 1 }
+                        unique: false
+                        balancing: true
+                        chunks:
+                                myshardrs01     512
+                                myshardrs02     512
+                        too many chunks to print, use verbose if you want to force print
+```
+* 集合分片
+对于集合分片，使用 sh.shardCollection() 方法指定集合和分片键
+语法：
+```
+sh.shardCollection(namespace, key, unique)
+```
+mongoDB的分片策略
+1. 哈希策略
+基于哈希的分片，mongoDB会计算一个字段的哈希值，并用这个哈希值来创建数据块
+2.范围策略
+基于范围的分片，mongoDB会按照片键的范围把数据分成不同的部分
 
-* 开启分片功能：
-sh.enabledSharding("库名")、sh.shardCollection("库名.集合名",{"key":1}),在mongos上的articledb
-数据库配置sharding
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
