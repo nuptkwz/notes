@@ -21,8 +21,47 @@ db.createCollection(name)
 ```
 show collections 或者 show tables
 ```
-
-
+* 集合的删除
+```
+//删除article集合
+db.article.drop()
+```
+# 文档（document）的基本操作
+## 插入
+* 单文档插入
+使用insert()或者save()向集合中插入文档，区别在于insert用于首次插入，重复会报错，而save是全量更新。语法如下：
+```
+db.collection.insert(
+<document or array of documents>,
+  {
+    writeConcern: <document>,
+    //插入的顺序，2.6版本默认为true
+    ordered: <boolean>
+  }
+)
+```
+* 多文档插入（批量插入）
+```
+db.collection.insertMany(
+    [ <document 1> , <document 2>, ... ],
+      {  
+        writeConcern: <document>,
+        ordered: <boolean>
+      }
+)
+```
+## 查询
+* 根据参数查询
+```
+db.collection.find(<query>, [projection])
+```
+例子：
+1. 查询comment集合中所有
+```
+db.comment.find()或者
+db.getCollection("comment").find()或者
+db.comment.find({})
+```
 
 
 
