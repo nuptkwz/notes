@@ -62,6 +62,11 @@ db.comment.find()或者
 db.getCollection("comment").find()或者
 db.comment.find({})
 ```
+2.按一定的条件查询
+如按articleid和nickname查询
+```
+db.comment.find({"articleid":"100003","nickname":"Rose"})
+```
 
 
 
