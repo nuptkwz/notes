@@ -67,6 +67,13 @@ db.comment.find({})
 ```
 db.comment.find({"articleid":"100003","nickname":"Rose"})
 ```
+3.返回符合条件的第一条记录
+```
+db.comment.findOne({"articleid":"100003"})
+```
+
+
+
 
 
 
