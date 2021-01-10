@@ -63,15 +63,19 @@ db.getCollection("comment").find()或者
 db.comment.find({})
 ```
 2.按一定的条件查询
-如按articleid和nickname查询
+如按articleId和nickname查询
 ```
-db.comment.find({"articleid":"100003","nickname":"Rose"})
+db.comment.find({"articleId":"100003","nickName":"Rose"})
 ```
 3.返回符合条件的第一条记录
 ```
-db.comment.findOne({"articleid":"100003"})
+db.comment.findOne({"articleId":"100003"})
 ```
-
+4.投影查询
+投影查询指的是查询结果只返回部分字段，不返回所有字段，如查询userId=1001结果只显示_id、userId、nickName：
+```
+db.comment.find({userId:"1001"},{userId:1,nickName:1})
+```
 
 
 
