@@ -396,3 +396,5 @@ should是一个或的关系，只要满足其中的一个就行了。如何想�
 }
 ```
 它还有一个关键词就是must_no，它的意识和must正好想法，代表的意思就是一定不相等的意思。
+
+参考：https://github.com/nuptkwz/notes/tree/master/technology/elasticsearch
