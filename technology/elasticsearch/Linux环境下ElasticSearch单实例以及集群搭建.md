@@ -77,3 +77,5 @@ discovery.zen.ping.unicast.hosts: ["127.0.0.1"]
  - **无法启动es**
  1.自己linux自带的openjdk的版本不支持，卸载之后，重新安装了jdk，配置环境变量就行了（值得注意的是要想环境变量立即生效，得用**source /etc/profile**）
  2.以后台的方式启动，再次启动es起不来，需要把原先的es进程给杀掉，再次启动就ok了
+
+ 参考：https://github.com/nuptkwz/notes/tree/master/technology/elasticsearch
