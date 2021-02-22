@@ -59,3 +59,5 @@ rm -rf /var/lib/docker
 docker存放文件的位置
  -  Registry: https://index.docker.io/v1/
 docker默认拉去镜像的地址
+
+参考：
