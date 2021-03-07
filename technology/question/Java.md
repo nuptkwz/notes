@@ -1,0 +1,10 @@
+# Java
+- HashMap的key要注意什么？
+- HashMap原理？hash冲突了怎么办？为什么会线程不安全，具体哪里不安全？
+- JDK1.8中对hash算法和寻址算法是如何优化的？
+- 产线中如果有没有遇到内存爆满、cpu飙升的情况？
+- 如何排查GC情况？
+- ThreadLocal原理，为什么用弱引用？弱引用和强引用的区别？
+- 产线cpu飙升很高，如何排查？
+- AIO、BIO、NIO的区别？NIO是异步的吗？
+- Synchronized和Lock的区别？
