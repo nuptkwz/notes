@@ -56,4 +56,13 @@
       事务回滚，会导致内层的事务也回滚；当时如果内层的事务回滚只会回滚自己的事务）。
 
 - Spring Boot的核心架构？
-  
+   1.实例化bean：如果要使用一个bean的话
+   2.设置对象属性（依赖注入）：它需要去看看你的这个bean依赖了谁，把你依赖的bean也创建出来，给你进行一个注入，比如通过构造函数，setter方法
+   3.处理Aware接口：如果这个Bean已经实现了ApplicationContextAware接口，spring容器就会调用我们的bean的setApplicationContext
+     (ApplicationContext)方法，传入spring上下文，把spring容器传递给这个bean
+   4.BeanPostProcessor：如果想在bean实例构建好了之后，此时在这个时间点，我们想对bean进行一些自定义的处理，那么可以让bean实现了
+     BeanPostProcessor接口，那将会调用postProcessBeforeInitialization(Object obj,String s)方法。
+   5.InitializingBean与init-method：
+
+- spring中用到哪些设计模式？
+
