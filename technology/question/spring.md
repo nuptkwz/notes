@@ -63,6 +63,13 @@
    4.BeanPostProcessor：如果想在bean实例构建好了之后，此时在这个时间点，我们想对bean进行一些自定义的处理，那么可以让bean实现了
      BeanPostProcessor接口，那将会调用postProcessBeforeInitialization(Object obj,String s)方法。
    5.InitializingBean与init-method：
+     如果Bean在Spring配置文件中配置了init-method属性，则会自动调用其他配置的初始化方法。
+   6.如果这个Bean已经实现了BeanPostProcessor接口，那将会调用postProcessAfterInitialization(Object obj,String s)方法。
+   7.DisposableBean:
+     当Bean不再需要时，会经过清理阶段，如果Bean实现了DisposableBean这个接口，会调用其实现的destroy()方法
+   8.destroy-method:
+     最后，如果这个Bean的Spring配置中配置了destroy-method属性，会自动调用其配置的销毁方法。
 
 - spring中用到哪些设计模式？
+  1.
 
