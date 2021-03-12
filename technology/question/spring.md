@@ -70,6 +70,8 @@
    8.destroy-method:
      最后，如果这个Bean的Spring配置中配置了destroy-method属性，会自动调用其配置的销毁方法。
 
+     创建+初始化一个bean -> spring容器管理的bean长期存活  ->  销毁bean （两个回调函数）
+
 - spring中用到哪些设计模式？
   1.
 
