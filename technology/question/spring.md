@@ -80,3 +80,13 @@
   3.代理模式：对一些类的方法切入一些增强的代码，会创建一些动态代理的对象，让你对那些目标对象的访问，先经过动态代理的对象，
     动态代理对象会做一些增强的代码，再去调用你的目标对象
 
+- 能说下Spring MVC核心架构吗？
+  1.tomcat的工作线程将请求转发给spring mvc框架的DispatcherServlet
+  2.DispatcherServlet去查找@Controller注解的controller,一般controller上会加上@RequestMapping的注解，标注说哪些controller
+    是用来处理哪些请求的，此时根据请求的uri去定位到哪个controller来进行处理。
+  3.根据@RequestMapping去查找，使用这个controller内的哪个方法来进行请求的处理，对于每一个方法一般也会加上@RequestMapping注解
+  4.前后端分离会直接调用我们的controller层某个方法进行请求处理
+  5.controller层方法会有一个返回值，以前一般还会走jsp、模板等，把前端页面放在后端的工程里面，返回一个页面模板的名字，spring mvc框架
+    使用模板技术，对html页面做了一个渲染；返回json串。前后端分离之后，前端发送一个请求过来，后端只需要返回一个json数据
+  6.把渲染之后的html页面返回给浏览器去进行显示；前端负责把html页面渲染给浏览器就可以了。
+
