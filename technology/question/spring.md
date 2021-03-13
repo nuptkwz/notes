@@ -90,3 +90,18 @@
     使用模板技术，对html页面做了一个渲染；返回json串。前后端分离之后，前端发送一个请求过来，后端只需要返回一个json数据
   6.把渲染之后的html页面返回给浏览器去进行显示；前端负责把html页面渲染给浏览器就可以了。
 
+- Spring Cloud核心架构？
+  springboot、spring、spring mvc，让你开发那种单体架构的系统；spring cloud是让你去开发分布式系统，让你把系统拆分为很多的子系统，
+  子系统相互之间进行请求和调用
+
+  spring cloud包括eureka、ribbon、feign、zuul、hystrix（用于服务之间调用的熔断、隔离、降级）、链路追踪以及其他的组件
+
+
+
+
+
+
+
+
+
+
