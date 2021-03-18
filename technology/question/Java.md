@@ -39,3 +39,9 @@
   网络层：ip协议
   数据链路层：以太网协议
 
+- 为什么要重写equals和hashcode方法？不重写会怎么样？
+- treeMap和map哪个快？
+- HashMap数组加链表链表变成数组怎么样？
+- redis集群脑裂怎么办？如何避免脑裂？
+- CountDownLatch和SemaPhone的区别？
+- 简单工厂模式和抽象工厂模式的区别？
