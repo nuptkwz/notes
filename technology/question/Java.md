@@ -58,5 +58,12 @@
      在进入同步代码块的时候，对变量的读操作，全部会强制执行refresh的操作。
   有序性，synchronized关键字,他会通知加各种各样的内存屏障来保证说，解决LoadLoad、StoreStore等重排序
 
+# ymm
+- java里面的乐观锁有哪些？
+- 能说下一次CAS操作吗？
+- synchronized类上面和方法上面的用法
+
+
+
 
 
