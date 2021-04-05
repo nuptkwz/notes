@@ -61,7 +61,9 @@
 # ymm
 - java里面的乐观锁有哪些？
 - 能说下一次CAS操作吗？
-- synchronized类上面和方法上面的用法
+- synchronized类上面和方法上面的用法？会同时进入两个方法吗？
+- Thread类的start和run方法，start里面调用run，run里面调用本线程的start方法？
+- ArrayList和LinkedList的区别？ArrayList从尾部插入的复杂度？
 
 
 
