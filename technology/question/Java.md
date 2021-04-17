@@ -64,7 +64,11 @@
 - synchronized类上面和方法上面的用法？会同时进入两个方法吗？
 - Thread类的start和run方法，start里面调用run，run里面调用本线程的start方法？
 - ArrayList和LinkedList的区别？ArrayList从尾部插入的复杂度？
--
+- 对象的创建方式有几种？Spring底层对象是如何创建的？
+- Jvm 1.8之后的默认垃圾回收器是哪种？
+- 双亲委派机制的实现？为什么要这么用？
+- 接口可以继承多个接口吗？类可以继承多少类吗？为什么？
+- 看过哪些框架的代码？
 
 
 
