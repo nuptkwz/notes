@@ -93,7 +93,6 @@
 - Spring Cloud核心架构？
   springboot、spring、spring mvc，让你开发那种单体架构的系统；spring cloud是让你去开发分布式系统，让你把系统拆分为很多的子系统，
   子系统相互之间进行请求和调用
-
   spring cloud包括eureka、ribbon、feign、zuul、hystrix（用于服务之间调用的熔断、隔离、降级）、链路追踪以及其他的组件
 
 
