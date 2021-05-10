@@ -12,7 +12,7 @@ ThreadLocal用于保存每个线程独享的对象，为每个线程创建一个
 #  ThreadLocal的基本使用
 ## 常用方法
 我们先看一下它的类图中的方法：
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20200603221102619.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzIyNzk3NDI5,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](https://upload-images.jianshu.io/upload_images/9905084-4892ea41581c9042?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 方法申明|描述
 --|--
 ThreadLocal()|创建ThreadLocal对象
@@ -167,7 +167,7 @@ public class ThreadLocalExample3 {
 上面的这段代码也能起到线程对于共享变量的隔离效果，但是需要线程挨个排队去实现业务，这样就失去了多线程并发执行的意义了。
 ### ThreadLocal和Synchronized的区别
 虽然ThreadLocal模式和Synchronized关键字都用于多线程并发访问变量的问题，不过两者处理问题的角度和思路的不同的
-||Synchronized|ThreadLocal|
+|Synchronized|ThreadLocal|
 ---|----|--|--|
 原理|同步机制采用了以时间换空间的方式，只提供了一份变量，让不同线程排队访问|ThreadLocal采用了以空间换时间的方式，为每个线程都提供了一份变量的副本，从而实现同时访问而互不干扰
 侧重点|多个线程之间访问资源的同步|多个线程中让每个线程之间的数据相互隔离
@@ -183,7 +183,7 @@ ThreadLocal和Synchronized都能解决问题，但是使用ThreadLocal更为合�
 # ThreadLocal的设计及源码分析
 ## 设计
 JDK1.8中ThreadLocal的设计原则是：每个Thread维护一个ThreadLocalMap，这个Map的key是ThreadLocal实例本身，value才是真正要存储的值object，比如存储的user对象等，如下图所示。
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20200818224037653.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzIyNzk3NDI5,size_16,color_FFFFFF,t_70#pic_center)
+![在这里插入图片描述](https://upload-images.jianshu.io/upload_images/9905084-9163eb137db0ba65?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 过程如下：
 - 每个Thread线程内部都有一个Map(ThreadLocalMap)
 - Map里面存储ThreadLocal对象(key)	和线程的变量副本（value）
@@ -238,10 +238,9 @@ public void set(T value) {
 ```
 #  ThreadLocal使用注意事项
 
- - 在使用ThreadLocal的过程中可能会导致内存泄漏的问题
-为了避免内存泄漏，用完之后调用ThreadLocal的remove方法，调用这个方法可以删除对应的value对象，可以避免内存泄漏
- - 异步线程、子线程是不能够通过主线程的ThreadLocal获取相关信息的，可以将ThreadLocal升级为InheritableThreadLocal，但是如果异步线程获取ThreadLocal在主线程销毁ThreadLocal之后还是不能获取到
-
 # 项目中使用遇到的问题
 
+# 思考
+ - ThreadLocal是不是用来解决共享资源的多线程访问问题的？
+不是，ThreadLocal虽然可以用于解决多线程情况下的线程安全问题，但其资源不是共享的，而是每个线程独享的。它解决并发资源的思路是在initialValue中new出自己线程独享的资源，而多个线程之间，它们所访问的对象本身是不共享的，自然就不存在任何并发问题。
 # 小结
