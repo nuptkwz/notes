@@ -242,5 +242,12 @@ public void set(T value) {
 
 # 思考
  - ThreadLocal是不是用来解决共享资源的多线程访问问题的？
-不是，ThreadLocal虽然可以用于解决多线程情况下的线程安全问题，但其资源不是共享的，而是每个线程独享的。它解决并发资源的思路是在initialValue中new出自己线程独享的资源，而多个线程之间，它们所访问的对象本身是不共享的，自然就不存在任何并发问题。
+   不是，ThreadLocal虽然可以用于解决多线程情况下的线程安全问题，但其资源不是共享的，而是每个线程独享的。它解决并发资源的思路是在initialValue中new出自己线程独享的资源，而多个线程之间，它们所访问的对象本身是不共享的，自然就不存在任何并发问题。
+ - ThreadLocal什么情况下会发生内存泄漏？如何避免的？
+   ThreadLocal内存泄漏主要体现在key和value的内存泄漏，ThreadLocal的消亡是伴随着线程的，单纯的将ThreadLocal置为空它底层的ThreadLocalMap
+   的key会存在一个引用而不能释放，因此会发生内存泄漏。
+   解决方法：
+   1.key采用弱引用（ThreadLocal内部解决）
+   2.通过.remove的方式避免了value值的内存泄漏
+
 # 小结
