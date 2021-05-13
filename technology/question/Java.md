@@ -1,7 +1,4 @@
 # Java
-- HashMap的key要注意什么？
-- HashMap原理？hash冲突了怎么办？为什么会线程不安全，具体哪里不安全？
-- JDK1.8中对hash算法和寻址算法是如何优化的？
 - 产线中如果有没有遇到内存爆满、cpu飙升的情况？
 - 如何排查GC情况？
 - ThreadLocal原理，为什么用弱引用？弱引用和强引用的区别？ThreadLocal底层使用了什么引用？为什么？
@@ -44,7 +41,6 @@
 
 - 为什么要重写equals和hashcode方法？不重写会怎么样？
 - treeMap和map哪个快？
-- HashMap数组加链表链表变成数组怎么样？
 - redis集群脑裂怎么办？如何避免脑裂？
 - CountDownLatch和SemaPhone的区别？
 - 简单工厂模式和抽象工厂模式的区别？
