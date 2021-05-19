@@ -16,6 +16,10 @@
 redis cluster支撑n个redis master node，每个master node都可以挂载多个slave node,读写分离的架构，对于每个master来说，写就写到master，读就从该master对应的slave去读。
 高可用，每个master都有一个slave节点，如果master挂掉，redis cluster这套机制就会自动将某个slave切换成master。
 redis cluster（多master+读写分离+高可用）
+# redis cluster的介绍
+redis cluster的特点：
+- 自动将数据进行分片，每个master上放一部分数据
+- 提供内置的高可用支持，部分master不可用时，还可以继续工作
 # redis cluster VS replication + sentinal
 replication: 一个master，多个slave，要几个slave跟你的要求的读吞吐量来决定，然后自己搭建一个sentinal集群，去保证redis主从架构的高可用性。
 redis cluster：针对海量数据+高并发+高可用的场景，海量数据，如果你的数据量很大，那么建议用redis cluster。
