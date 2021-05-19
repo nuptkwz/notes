@@ -20,6 +20,15 @@ redis cluster（多master+读写分离+高可用）
 redis cluster的特点：
 - 自动将数据进行分片，每个master上放一部分数据
 - 提供内置的高可用支持，部分master不可用时，还可以继续工作
+
+redis cluster架构下，每个redis要放开两个端口号，一个6379和另外一个就是加10000的端口号，16379。16379端口号是用来进行节点间的通信的，也就是cluster bus的东西，集群总线。cluster bus用来进行故障检查，配置更新，故障转移授权。cluster bus用了另外一种二进制协议，主要用于节点间进行高效的数据交换，占用更少的网络带宽和处理时间。
+## hash算法
+在缓存这块很少使用hash算法，一般用于数据库分库分表。
+## 一致性hash算法（自动缓存迁移）+虚拟节点（自动负载均衡）
+
+## redis cluster的hash slot算法
+redis cluster有固定的16384个hash slot，对每个key计算CRC16值，然后对16384取模，可以获取key对应的hash slot，redis cluster中每个master都会持有部分slot，比如3个master，那么可能每个master持有5000多个hash slot，hash slot让node增加和移除很简单，增加一个master，就将其他master的hash slot移动部分过去，减少一个master，就将它的hash slot移动到其他master上去，移动hash slot的成本是非常低的。
+
 # redis cluster VS replication + sentinal
 replication: 一个master，多个slave，要几个slave跟你的要求的读吞吐量来决定，然后自己搭建一个sentinal集群，去保证redis主从架构的高可用性。
 redis cluster：针对海量数据+高并发+高可用的场景，海量数据，如果你的数据量很大，那么建议用redis cluster。
