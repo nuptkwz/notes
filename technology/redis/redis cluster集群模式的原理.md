@@ -24,7 +24,13 @@ redis cluster的特点：
 redis cluster架构下，每个redis要放开两个端口号，一个6379和另外一个就是加10000的端口号，16379。16379端口号是用来进行节点间的通信的，也就是cluster bus的东西，集群总线。cluster bus用来进行故障检查，配置更新，故障转移授权。cluster bus用了另外一种二进制协议，主要用于节点间进行高效的数据交换，占用更少的网络带宽和处理时间。
 ## hash算法
 在缓存这块很少使用hash算法，一般用于数据库分库分表。
+![hash算法（最简单的数据分布算法）.png](https://upload-images.jianshu.io/upload_images/9905084-a38af88cba24cb8c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+hash算法的问题：
+- 某个master宕机了，所有的请求过来会基于最新的2个master去取模，尝试去取数据，导致所有的缓存都失效了
+- 对于高并发场景来说，是不可以接受的。高并发场景下，1/3的数据不能走缓存全部走数据库，那么数据库就会被压垮，它最大的问题就是只要任意一个master宕机，那么大量的数据就需要重新计算写入缓存，风险很大。
+
 ## 一致性hash算法（自动缓存迁移）+虚拟节点（自动负载均衡）
+有个key过来之后，计算它的hash值，然后用hash值在圆环对应的各个点上（每个点都有一个hash值）去比对，看hash值应该落在圆环的哪个部位，key落到圆环上之后，就会顺时针旋转去寻找距离自己最近的一个节点。
 
 ## redis cluster的hash slot算法
 redis cluster有固定的16384个hash slot，对每个key计算CRC16值，然后对16384取模，可以获取key对应的hash slot，redis cluster中每个master都会持有部分slot，比如3个master，那么可能每个master持有5000多个hash slot，hash slot让node增加和移除很简单，增加一个master，就将其他master的hash slot移动部分过去，减少一个master，就将它的hash slot移动到其他master上去，移动hash slot的成本是非常低的。
