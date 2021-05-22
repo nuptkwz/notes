@@ -31,10 +31,12 @@ hash算法的问题：
 
 ## 一致性hash算法（自动缓存迁移）+虚拟节点（自动负载均衡）
 有个key过来之后，计算它的hash值，然后用hash值在圆环对应的各个点上（每个点都有一个hash值）去比对，看hash值应该落在圆环的哪个部位，key落到圆环上之后，就会顺时针旋转去寻找距离自己最近的一个节点。
+一致性hash算法相对于hash算法，只有1/n的缓存失效，需要重新查询数据库。
+一致性hash可能导致的问题：
+- 缓存热点问题，可能集中在某个hash区间内的值特别多，会导致大量的数据都涌入同一个master内，造成该master热点问题，造成性能瓶颈
 
 ## redis cluster的hash slot算法
-redis cluster有固定的16384个hash slot，对每个key计算CRC16值，然后对16384取模，可以获取key对应的hash slot，redis cluster中每个master都会持有部分slot，比如3个master，那么可能每个master持有5000多个hash slot，
-hash slot让node增加和移除很简单，增加一个master，就将其他master的hash slot移动部分过去，减少一个master，就将它的hash slot移动到其他master上去，移动hash slot的成本是非常低的。
+redis cluster有固定的16384个hash slot，对每个key计算CRC16值，然后对16384取模，可以获取key对应的hash slot，redis cluster中每个master都会持有部分slot，比如3个master，那么可能每个master持有5000多个hash slot，hash slot让node增加和移除很简单，增加一个master，就将其他master的hash slot移动部分过去，减少一个master，就将它的hash slot移动到其他master上去，移动hash slot的成本是非常低的。
 
 # redis cluster VS replication + sentinal
 replication: 一个master，多个slave，要几个slave跟你的要求的读吞吐量来决定，然后自己搭建一个sentinal集群，去保证redis主从架构的高可用性。
