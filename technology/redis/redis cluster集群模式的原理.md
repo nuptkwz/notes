@@ -45,6 +45,7 @@ hash算法的问题：
 
 ## redis cluster的hash slot算法
 redis cluster有固定的16384个hash slot，对每个key计算CRC16值，然后对16384取模，可以获取key对应的hash slot，redis cluster中每个master都会持有部分slot，比如3个master，那么可能每个master持有5000多个hash slot，hash slot让node增加和移除很简单，增加一个master，就将其他master的hash slot移动部分过去，减少一个master，就将它的hash slot移动到其他master上去，移动hash slot的成本是非常低的。
+任何一台机器宕机了，另外两个节点，不影响的，因为key找的是hash slot，找的不是机器。
 
 # redis cluster VS replication + sentinal
 replication: 一个master，多个slave，要几个slave跟你的要求的读吞吐量来决定，然后自己搭建一个sentinal集群，去保证redis主从架构的高可用性。
