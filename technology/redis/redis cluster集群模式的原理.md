@@ -40,6 +40,8 @@ hash算法的问题：
 
 ## 一致性hash算法（自动缓存迁移）+虚拟节点（自动负载均衡）
 为了解决一致性hash导致的这种问题，引入了一致性hash算法（自动缓存迁移）+虚拟节点（自动负载均衡），给每个master都做了均匀分布的虚拟节点，这样在每个区间内，大量的数据，都会均匀地分布到不同的节点内，而不是按照顺时针的顺序去走，全部涌入同一个master内，造成缓存的热点问题。
+![一致性hash算法（自动缓存迁移）+虚拟节点（自动负载均衡）.png](https://upload-images.jianshu.io/upload_images/9905084-53db6f9e90108b55.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 
 ## redis cluster的hash slot算法
 redis cluster有固定的16384个hash slot，对每个key计算CRC16值，然后对16384取模，可以获取key对应的hash slot，redis cluster中每个master都会持有部分slot，比如3个master，那么可能每个master持有5000多个hash slot，hash slot让node增加和移除很简单，增加一个master，就将其他master的hash slot移动部分过去，减少一个master，就将它的hash slot移动到其他master上去，移动hash slot的成本是非常低的。
