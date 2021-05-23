@@ -18,7 +18,6 @@ redisTemplate.hasKey(key)
 redisTemplate.opsForValue().get(key)
 ```
 删除单个key值
-
 ```
 redisTemplate.delete(key)
 ```
@@ -28,12 +27,11 @@ redisTemplate.delete(key)
 redisTemplate.delete(keys) //其中keys:Collection<K> keys
 ```
 将当前传入的key值序列化为byte[]类型
-
 ```
 redisTemplate.dump(key)
 ```
-设置过期时间
 
+设置过期时间
 ```
 public Boolean expire(String key, long timeout, TimeUnit unit) {
     return redisTemplate.expire(key, timeout, unit);
