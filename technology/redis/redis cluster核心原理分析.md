@@ -1,1 +1,1 @@
-> 本文主要分析了redis clusteKr的核心原理，gossip通信，jedis smart定位，主备切换。
+> 本文主要分析了redis cluster的核心原理，gossip通信，jedis smart定位，主备切换。
