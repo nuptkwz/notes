@@ -52,3 +52,7 @@ replication: 一个master，多个slave，要几个slave跟你的要求的读吞
 redis cluster：针对海量数据+高并发+高可用的场景，海量数据，如果你的数据量很大，那么建议用redis cluster。
 
 
+
+
+
+
