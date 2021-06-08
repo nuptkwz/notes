@@ -1,8 +1,8 @@
-> 本文主要分析了redis cluster的核心原理，gossip通信，jedis smart定位，主备切换。
+> 本文主要分析了redis cluster的节点间通信机制，包括基础通信原理，gossip通信，jedis smart定位，主备切换。
 # 节点间的通信机制
 ## 基础通信原理
 1.redis cluster节点间采用gossip协议进行通信
-  根集中式不同，不是将集群元数据（节点信息，故障等等）集中存储在某个节点上，而是互相之间不断通信，保持个集群所有节点的数据是完整的
+  跟集中式不同，不是将集群元数据（节点信息，故障等等）集中存储在某个节点上，gossip协议是互相之间不断通信，保持个集群所有节点的数据是完整的
   ![集中式的元数据集群存储和维护.png](https://upload-images.jianshu.io/upload_images/9905084-f96e7bcee01ef1ae.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 ![gossip协议维护集群元数据.png](https://upload-images.jianshu.io/upload_images/9905084-fbb19615a10e65e2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
