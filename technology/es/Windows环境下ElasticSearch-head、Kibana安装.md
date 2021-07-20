@@ -56,7 +56,11 @@ https://www.elastic.co/cn/downloads/kibana
 之后利用Kibana进行查询都是点击这个地方进行写查询语句，如下：
 ![利用Kibana查询.png](https://upload-images.jianshu.io/upload_images/9905084-f2a0b719718f7a25.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-
+## 汉化
+如果需要汉化的话，找到：D:\TOOL\es\kibana-7.6.1-windows-x86_64\config下的kibana.yml文件，修改Kibana的配置，改为：zh-CN，然后重启Kibana即可！
+```
+i18n.locale: "zh-CN"
+```
 
 
 
