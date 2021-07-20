@@ -25,10 +25,19 @@ Shard代表索引分片，es可以把一个完整的索引分成多个分片保�
 
 当一个主分片失败或者出现问题时，代替的分片就会代替其工作，从而提高了es的可用性，那么备份的分片还可以支持搜索操作，以分摊搜索的压力。es在创建索引时，会创建5个分片，一份备份，这个数量是可以修改的，**备份是可以动态修改的**。
 
-# es的RESTFul API
+# 物理设计
+## 一个人就是一个集群
+es在后台把每个索引划分成多个分片，每份分片可以在集群中的不同服务器间迁移。
+一个人就是一个集群！默认的集群名称就是elasticsearch。
+![一个人就是一个集群.png](https://upload-images.jianshu.io/upload_images/9905084-d33a958bfbf2875d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
- - API的基本格式http://<ip>:<port>/<索引>/<类型>/<文档id>
- - 常用HTTP动词GET/PUT/POST/DELETE
+## 节点和分片如何工作
+默认分片是5个，创建副本是1个，意思就是我们存的数据通过这个分片可以搭到不同的节点上，一个集群至少有一个节点，而一个节点就是一个es进程，节点可以有多个索引默认的，如果你创建索引，那么索引将会有5个分片（primary shard，又称为主分片）构成的，每一个主分片会有一个副本（replica shard,又称复制分片）如下：
+![默认分片和副本数.png](https://upload-images.jianshu.io/upload_images/9905084-9984971e9a4d7500.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+ 下图是一个有3个节点的集群，可以看见主分片和对应的副本分片都不会在同一节点内，这样的好处在于某一个节点挂了，数据不至于丢失。实际上，一个分片是一个Lucene索引，一个包含**倒排索引**的文件目录，倒排索引的结构使得es在不扫描全部文档的情况下，就能告诉你哪些文档包含特定的关键词。
+![es集群示例.png](https://upload-images.jianshu.io/upload_images/9905084-f0e7c10e6427015a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 
 # ElasticSearch VS Solr
 - Solr 利用 Zookeeper 进行分布式管理，而 Elasticsearch 自身带有分布式协调管理功能;
@@ -36,6 +45,10 @@ Shard代表索引分片，es可以把一个完整的索引分成多个分片保�
 - Solr 官方提供的功能更多，而 Elasticsearch 本身更注重于核心功能，高级功能多有第三方插件提供；
 - Solr 在传统的搜索应用中表现好于 Elasticsearch，但在处理实时搜索应用时效率明显低于 Elasticsearch。
 - Solr 是传统搜索应用的有力解决方案，但 Elasticsearch 更适用于新兴的实时搜索应用。
+
+# es的RESTFul API
+ - API的基本格式http://<ip>:<port>/<索引>/<类型>/<文档id>
+ - 常用HTTP动词GET/PUT/POST/DELETE
 
  ## 索引创建
  索引的创建主要分结构化和非结构化创建
