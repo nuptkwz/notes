@@ -21,6 +21,8 @@ ik_smart会将一句话拆分成几个词语
 ### 测试ik_max_word
 ik_max_word最细粒度的划分词，它除了将当前词分出来，还将这个句子中可能组合的词语都列出来，穷尽词库的可能
 ![ik_max_word分词器.png](https://upload-images.jianshu.io/upload_images/9905084-a0119ab7e61831f9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+以上是两种分词模式，但是有时候还一些我们自定义的专有名词，它就分不了了，需要我们在配置文件中进行配置，如刻威舟吃油条，刻威舟是一个人名字，但是它却分成了三个字
+![自定义词语测试.png](https://upload-images.jianshu.io/upload_images/9905084-78d9e6bf6ea03f32.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 
 
