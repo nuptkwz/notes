@@ -14,6 +14,14 @@ https://github.com/medcl/elasticsearch-analysis-ik
 ![elasticsearch-plugin进行插件查询.png](https://upload-images.jianshu.io/upload_images/9905084-55f88cc9c5aa29d9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 ## 使用Kibana进行测试
+### 测试 ik_smart（ik最简分词器）
+ik_smart会将一句话拆分成几个词语
+![ik_smart分词器.png](https://upload-images.jianshu.io/upload_images/9905084-aeb200df1e976dfe.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+### 测试ik_max_word
+ik_max_word最细粒度的划分词，它除了将当前词分出来，还将这个句子中可能组合的词语都列出来，穷尽词库的可能
+![ik_max_word分词器.png](https://upload-images.jianshu.io/upload_images/9905084-a0119ab7e61831f9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 
 
 
