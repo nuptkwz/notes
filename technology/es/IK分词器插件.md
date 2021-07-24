@@ -24,6 +24,19 @@ ik_max_word最细粒度的划分词，它除了将当前词分出来，还将这
 以上是两种分词模式，但是有时候还一些我们自定义的专有名词，它就分不了了，需要我们在配置文件中进行配置，如刻威舟吃油条，刻威舟是一个人名字，但是它却分成了三个字
 ![自定义词语测试.png](https://upload-images.jianshu.io/upload_images/9905084-78d9e6bf6ea03f32.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
+### ik分词器增加自己的配置
+到ik插件的config下面的IKAnalyzer.cfg.xm里面进行配置，如下：
+![IKAnalyzer.cfg.xml.png](https://upload-images.jianshu.io/upload_images/9905084-211ef6cc3940ee32.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+编写自己的配置文件，加到IKAnalyzer.cfg.xml里面，如下：
+![将kwz.dic加到IKAnalyzer.cfg.xml里面.png](https://upload-images.jianshu.io/upload_images/9905084-802a3de796ca9fac.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+重启es，在Kibana上进行验证，如下：
+![验证自定义词.png](https://upload-images.jianshu.io/upload_images/9905084-5826d4ef7064ffe3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+可以看见，刚才“刻威舟”是分开的单词，现在“刻威舟”是一个词语，这就是自定义词的用法
+
+
+
+
 
 
 
