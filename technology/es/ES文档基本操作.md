@@ -71,6 +71,26 @@ GET /wangzhe/user/_search
 }
 ```
 ![模糊匹配结果.png](https://upload-images.jianshu.io/upload_images/9905084-e2943d50613d0f4f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+hit:包含了索引和文档的信息、查询的结果总数、查询出来的具体的文档、分数（通过分数可以判断哪个更符合）
+- 查询结果返回固定字段（类似于mongo中的倒影查询）
+```
+GET /wangzhe/user/_search
+{
+  "query": {
+    "match": {
+      "name": "鲁班"
+    }
+  },
+  "_source": ["name","role"]
+}
+```
+![查询结果返回固定字段.png](https://upload-images.jianshu.io/upload_images/9905084-a75d7da20bf2d2e0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+- 排序
+根据关键字符合鲁班，age排序，asc:升序，desc:降序
+![根据age进行排序的结果.png](https://upload-images.jianshu.io/upload_images/9905084-634156b4444d95d9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+- 分页查询
+from:从第几条数据开始，size:返回多少条数据
+![分页查询.png](https://upload-images.jianshu.io/upload_images/9905084-9ad983d02846e2e8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 
 
