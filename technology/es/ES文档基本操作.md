@@ -91,6 +91,84 @@ GET /wangzhe/user/_search
 - 分页查询
 from:从第几条数据开始，size:返回多少条数据
 ![分页查询.png](https://upload-images.jianshu.io/upload_images/9905084-9ad983d02846e2e8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+- 通过bool进行多条件的匹配查询
+must(相当于MySQL中的and)，所有条件都要符合
+must_not(相当于MySQL中的!=)
+```
+GET /wangzhe/user/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "name": "鲁班"
+          }
+        },
+        {
+          "match": {
+            "age": 5
+          }
+        }
+      ]
+    }
+  }
+}
+```
+![通过bool进行多条件的匹配查询.png](https://upload-images.jianshu.io/upload_images/9905084-a35729f6b84b836d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+should(相当于MySQL中的or)，所有条件或的查询
+![should命令查询.png](https://upload-images.jianshu.io/upload_images/9905084-9b7dd6d00f1509b4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+- 通过filter进行过滤查询
+```
+GET /wangzhe/user/_search
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "match": {
+            "name": "鲁班"
+          }
+        }
+      ],
+      "filter": {
+        "range": {
+          "age": {
+            "lte": 8
+          }
+        }
+      }
+    }
+  }
+}
+```
+![通过filter进行过滤查询.png](https://upload-images.jianshu.io/upload_images/9905084-f42f729af3b12a71.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+- 数组匹配查询
+数组里的多个匹配条件通过空格隔开即可，只要满足其中一个条件即可被查出
+```
+GET /wangzhe/user/_search
+{
+  "query": {
+    "match": {
+      "tags": "学生 肉"
+    }
+  }
+}
+```
+![数组匹配查询.png](https://upload-images.jianshu.io/upload_images/9905084-dce5d2849ea68aff.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+- 精确查询
+term查询是直接通过倒排索引指定的词条进程精确的查找！
+ **关于分词**
+a. term:查询精确的
+b. match:会使用分词器解析（先分析文档，再通过分析的文档进行查询）
+**两个类型 text keyword**
+
+
+
+
+
 
 
 
