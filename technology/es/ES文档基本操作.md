@@ -164,8 +164,86 @@ term查询是直接通过倒排索引指定的词条进程精确的查找！
 a. term:查询精确的
 b. match:会使用分词器解析（先分析文档，再通过分析的文档进行查询）
 **两个类型 text keyword**
+创建testdb索引并插入两条数据，name为text类型，desc为keyword类型。text类型会被当成分词器普通解析，如果是keyword类型则不会解析。
+```
+PUT testdb
+{
+  "mappings": {
+    "properties": {
+      "name":{
+        "type": "text"
+      },
+      "desc":{
+        "type": "keyword"
+      }
+    }
+  }
+}
+
+PUT testdb/_doc/1
+{
+  "name":"刻威舟",
+  "desc":"刻威舟desc1"
+}
 
 
+PUT testdb/_doc/2
+{
+  "name":"刻威舟",
+  "desc":"刻威舟desc2"
+}
+```
+通过head插件查看索引的映射规则：
+![通过head插件查看索引的映射规则.png](https://upload-images.jianshu.io/upload_images/9905084-b181dc2442775b13.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+**测试text、keyword两种类型**
+利用keyword会把它当做一个整体，而利用普通的默认分词器，会把它拆分成一个个字，如下图：
+![keyword没有被分析.png](https://upload-images.jianshu.io/upload_images/9905084-ba1bccfc079e095e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![standard可以看见被拆分了.png](https://upload-images.jianshu.io/upload_images/9905084-64caf9acaff87598.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+![keyword类型不会被分词器解析.png](https://upload-images.jianshu.io/upload_images/9905084-cb2bb275bb917a05.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+- 多个值匹配精确查询
+![多个值匹配精确查询.png](https://upload-images.jianshu.io/upload_images/9905084-ea787939bd4a20b5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+- 高亮查询
+1.默认高亮查询
+```
+GET wangzhe/user/_search
+{
+  "query": {
+    "match": {
+      "name": "王昭君"
+    }
+  },
+  "highlight": {
+    "fields": {
+      "name":{}
+    }
+  }
+}
+```
+搜索相关的结果会被高亮显示，通过highlight里面的fields进行字段设置
+![高亮查询.png](https://upload-images.jianshu.io/upload_images/9905084-983e35810ce60a41.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+2.自定义高亮查询
+```
+GET wangzhe/user/_search
+{
+  "query": {
+    "match": {
+      "name": "王昭君"
+    }
+  },
+  "highlight": {
+    "pre_tags": "<p class='key' style='color:red'",
+    "post_tags": "</p>",
+    "fields": {
+      "name":{}
+    }
+  }
+}
+```
+![自定义高亮查询.png](https://upload-images.jianshu.io/upload_images/9905084-d39e7fe27b46557a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 
 
