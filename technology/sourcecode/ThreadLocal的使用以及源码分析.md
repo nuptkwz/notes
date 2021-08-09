@@ -253,3 +253,5 @@ public void set(T value) {
    2.通过.remove的方式避免了value值的内存泄漏
 
 # 小结
+本文主要介紹ThreadLocal的一些基本用法，以及它的设计和源码分享，又介绍了它可能产生内存泄漏体现的两个方面，
+因此每次在使用完之后都要做.remove操作。
