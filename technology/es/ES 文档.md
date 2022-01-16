@@ -1,8 +1,9 @@
-> 本文主要介绍了ES文档的基本操作
+> 本文主要介绍了ES文档的基本操作 
 
 # 插入
+es可以指定id存储，也可以不指定id自动生成。自动生成的id是 URL-safe、基于Base64编码且长度为20个字符的GUID字符串。这些GUID字符串由可修改的FlakeID模式生成，这种模式允许多个节点并行生成唯一ID且互相之间的冲突概率几乎为零。
 ```
-PUT /wangzhe/user/1
+PUT /wangzhe/_doc/1
 {
   "name":"夏侯惇",
   "age":26,
@@ -14,16 +15,21 @@ PUT /wangzhe/user/1
 ![image.png](https://upload-images.jianshu.io/upload_images/9905084-9ec49fbd9c1df673.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 # 查询数据
+## 简单查询
 ```
-GET  /wangzhe/user/1
+GET  /wangzhe/_doc/1
 ```
 如下：
 ![查询数据.png](https://upload-images.jianshu.io/upload_images/9905084-827837df26b81e1e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+## 返回文档的一部分数据
+```
+GET  /wangzhe/_doc/1?_source=name,age
+```
 
 # 更新数据
 ## PUT操作全量修改
 ```
-PUT /wangzhe/user/1
+PUT /wangzhe/_doc/1
 {
   "name":"孙策",
   "age":26,
@@ -34,7 +40,7 @@ PUT /wangzhe/user/1
 ![更新数据.png](https://upload-images.jianshu.io/upload_images/9905084-b75c465df638b1c3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 ## POST+_update局部更新修改
 ```
-POST /wangzhe/user/1/_update
+POST /wangzhe/_update/1
 {
   "doc": {
     "tags": [
@@ -49,7 +55,7 @@ POST /wangzhe/user/1/_update
 #搜索
 ## 简单搜索
 ```
-GET  /wangzhe/user/_search?q=name:鲁
+GET  /wangzhe/_search?q=name:孙
 //q表示query
 //字段是name
 //匹配的值是鲁
@@ -61,11 +67,11 @@ ES比较复杂的是查询操作，包括排序、分页、高亮、模糊查询
 - 查询名称包含鲁班的数据
 语法
 ```
-GET /wangzhe/user/_search
+GET /wangzhe/_search
 {
   "query": {
     "match": {
-      "name": "鲁班"
+      "name": "孙"
     }
   }
 }
@@ -74,7 +80,7 @@ GET /wangzhe/user/_search
 hit:包含了索引和文档的信息、查询的结果总数、查询出来的具体的文档、分数（通过分数可以判断哪个更符合）
 - 查询结果返回固定字段（类似于mongo中的倒影查询）
 ```
-GET /wangzhe/user/_search
+GET /wangzhe/_search
 {
   "query": {
     "match": {
@@ -95,7 +101,7 @@ from:从第几条数据开始，size:返回多少条数据
 must(相当于MySQL中的and)，所有条件都要符合
 must_not(相当于MySQL中的!=)
 ```
-GET /wangzhe/user/_search
+GET /wangzhe/_search
 {
   "query": {
     "bool": {
@@ -122,7 +128,7 @@ should(相当于MySQL中的or)，所有条件或的查询
 
 - 通过filter进行过滤查询
 ```
-GET /wangzhe/user/_search
+GET /wangzhe/_search
 {
   "query": {
     "bool": {
@@ -148,7 +154,7 @@ GET /wangzhe/user/_search
 - 数组匹配查询
 数组里的多个匹配条件通过空格隔开即可，只要满足其中一个条件即可被查出
 ```
-GET /wangzhe/user/_search
+GET /wangzhe/_search
 {
   "query": {
     "match": {
@@ -209,7 +215,7 @@ PUT testdb/_doc/2
 - 高亮查询
 1.默认高亮查询
 ```
-GET wangzhe/user/_search
+GET wangzhe/_search
 {
   "query": {
     "match": {
@@ -227,7 +233,7 @@ GET wangzhe/user/_search
 ![高亮查询.png](https://upload-images.jianshu.io/upload_images/9905084-983e35810ce60a41.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 2.自定义高亮查询
 ```
-GET wangzhe/user/_search
+GET wangzhe/_search
 {
   "query": {
     "match": {
