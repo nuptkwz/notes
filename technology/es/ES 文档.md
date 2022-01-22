@@ -14,7 +14,7 @@ PUT /wangzhe/_doc/1
 依次添加鲁班、王昭君，结果如下：
 ![image.png](https://upload-images.jianshu.io/upload_images/9905084-9ec49fbd9c1df673.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-# 查询数据
+# 查询
 ## 简单查询
 ```
 GET  /wangzhe/_doc/1
@@ -25,8 +25,11 @@ GET  /wangzhe/_doc/1
 ```
 GET  /wangzhe/_doc/1?_source=name,age
 ```
-
-# 更新数据
+## 只要 _source字段
+```
+GET  /wangzhe/_doc/1?_source=name,age
+```
+# 更新
 ## PUT操作全量修改
 ```
 PUT /wangzhe/_doc/1
@@ -52,6 +55,12 @@ POST /wangzhe/_update/1
 }
 ```
 ![查询数据.png](https://upload-images.jianshu.io/upload_images/9905084-04b59cca406905b1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+# 删除
+删除id为1的文档
+```
+DELETE /wangzhe/_doc/1
+```
+删除之后_version 值仍然会增加。这是 Elasticsearch 内部记录本的一部分，用来确保这些改变在跨多节点时以正确的顺序执行。
 #搜索
 ## 简单搜索
 ```
