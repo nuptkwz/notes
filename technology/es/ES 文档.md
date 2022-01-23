@@ -260,6 +260,9 @@ GET wangzhe/_search
 ```
 ![自定义高亮查询.png](https://upload-images.jianshu.io/upload_images/9905084-d39e7fe27b46557a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
+# 处理冲突
+关系型数据库使用**悲观并发控制**，假定有变更冲突可能发生，因此阻塞访问资源以防止冲突。而es使用**乐观并发控制**，不会阻塞正在尝试的操作。 然而，如果源数据在读写当中被修改，更新将会失败。应用程序接下来将决定该如何解决冲突。 例如，可以重试更新、使用新的数据、或者将相关情况报告给用户。
+
 
 
 
