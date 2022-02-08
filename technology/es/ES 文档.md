@@ -15,6 +15,7 @@ PUT /wangzhe/_doc/1
 ![image.png](https://upload-images.jianshu.io/upload_images/9905084-9ec49fbd9c1df673.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 # 查询
+对于一个查询请求，Elasticsearch 的工程师偏向于使用 GET 方式，因为他们觉得它比 POST 能更好的描述信息检索（retrieving information）的行为。然而，因为带请求体的 GET 请求并不被广泛支持，所以 search API同时支持 POST 请求。
 ## 简单查询
 ```
 GET  /wangzhe/_doc/1
