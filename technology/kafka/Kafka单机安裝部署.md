@@ -1,4 +1,5 @@
-> 本文介绍了linux下kafka的安装与部署，其中zookeeper采用kafka自带的
+# 0. 前言
+> 本文介绍了linux下kafka的安装与部署，其中zookeeper采用kafka自带的,写这篇文章的目的是为了后面可以快速安装与部署kafka。
 
 # 1. 下载
 - 登陆kafka官网：https://kafka.apache.org/downloads
