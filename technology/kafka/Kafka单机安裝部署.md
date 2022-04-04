@@ -2,7 +2,8 @@
 > 本文介绍了linux下kafka的安装与部署，其中zookeeper采用kafka自带的,写这篇文章的目的是为了后面可以快速安装与部署kafka。
 
 # 1. 下载
-- 登陆kafka官网：https://kafka.apache.org/downloads
+- kafka官网下载地址：https://kafka.apache.org/downloads
+- 快速开始：http://kafka.apache.org/quickstart
 - 利用下载地址进行下载
    ```
   wget https://dlcdn.apache.org/kafka/3.1.0/kafka_2.13-3.1.0.tgz
@@ -38,24 +39,36 @@ initLimit=10
 ```
 
 # 5. 启动kafka
-## 5.1 启动zookeeper
+## 5.1 启动和停止zookeeper
 ```
 sudo bin/zookeeper-server-start.sh config/zookeeper.properties
+sudo bin/zookeeper-server-stop.sh config/zookeeper.properties
 ```
 
-## 5.2 启动kafka
+## 5.2 启动和停止kafka
 ```
 bin/kafka-server-start.sh config/server.properties
+bin/kafka-server-stop.sh config/server.properties
+```
+
+## 5.3 查看topic列表
+```
+bin/kafka-topics.sh --list --bootstrap-server localhost:2181
+```
+
+## 5.4 创建topic
+```
+./bin/kafka-topics.sh --create --topic kwz_1 --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1
 ```
 
 ## 5.3 启动kafka-producer
 ```
-./bin/kafka-console-producer.sh --broker-list localhost:9092 --topic keweizhou_1
+./bin/kafka-console-producer.sh --broker-list localhost:9092 --topic kwz_1
 ```
 
 ## 5.4 启动kafka-consumer
 ```
-./bin/kafka-console-consumer.sh  --bootstrap-server localhost:9092 --topickeweizhou_1 --from-beginning
+./bin/kafka-console-consumer.sh  --bootstrap-server localhost:9092 --topic kwz_1 --from-beginning
 ```
 
 
