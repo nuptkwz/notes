@@ -1,1 +1,4 @@
- Validation Failed: 1: type is missing;2: type is missing;
+# 前言
+> 本文主要介绍了SpringBoot集成ElasticSearch
+
+# 环境
