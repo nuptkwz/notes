@@ -132,6 +132,260 @@ GET /television/_search
 结果如下：
 ![按照多种类型聚合.png](https://upload-images.jianshu.io/upload_images/9905084-7a11645d94d9c9e6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
+4 柱状图功能-Histogram
+直方图histogram本质上是就是为柱状图功能设计的,它类似于terms，也是进行bucket分组操作，接收一个field，
+按照这个field的值的各个范围区间，进行bucket分组操作。histogram本质上属于bucket的一种划分方法，前面
+是将color相同的放到一个bucket中。
+例如：按照电视价格2000的区间对电视进行分组统计
+```
+GET /television/_search
+{
+  "size": 0,
+  "aggs": {
+    "price_histogram": {
+      "histogram": {
+        "field": "price",
+        "interval": 2000
+      },
+      "aggs": {
+        "price_sum": {
+          "sum": {
+            "field": "price"
+          }
+        },
+        "price_avg": {
+          "avg": {
+            "field": "price"
+          }
+        },
+        "price_min": {
+          "min": {
+            "field": "price"
+          }
+        },
+        "price_max": {
+          "max": {
+            "field": "price"
+          }
+        }
+      }
+    }
+  }
+}
+```
+其中
+- interval：2000，指的是划分范围，0~2000，2000~4000，4000~6000，6000~8000，8000~10000，这些区间数据
+  会放到不同的bucket中
+
+结果如下：
+![histogram聚合.png](https://upload-images.jianshu.io/upload_images/9905084-fb14af20c50ee1d0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+4 按照日期间隔划分-date histogram
+date histogram也是划分不同bucket的一种方法，它是按照我们指定的某个date类型的日期field，以及日期
+interval，去划分bucket
+- calendar_interval
+  calendar_interval，对应的值为1y,1M,1d等。
+  如果calendar_interval：1M，则2019-01-01~2019-01-31，就是一个bucket，2019-02-01~2019-02-28，就是一个
+  bucket
+- min_doc_count：0
+  即使某个interval如2019-01-01~2017-01-31中一条数据都没有，那么这个区间也是要返回的，不然默认是会过滤掉这个区间的
+- extended_bounds，min，max
+  划分bucket的时候，会限定在这个起始日期，和截止日期内
+  
+```
+GET /television/_search?size=0
+{
+  "aggs": {
+    "sales": {
+      "date_histogram": {
+        "field": "sold_date",
+        "calendar_interval": "1M",
+        "format": "yyyy-MM-dd",
+        "min_doc_count": 0,
+        "extended_bounds": {
+          "min": "2019-01-01",
+          "max": "2021-01-01"
+        }
+      }
+    }
+  }
+}
+```
+结果如下：
+```
+{
+  "took" : 0,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 1,
+    "successful" : 1,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : {
+      "value" : 8,
+      "relation" : "eq"
+    },
+    "max_score" : null,
+    "hits" : [ ]
+  },
+  "aggregations" : {
+    "sales" : {
+      "buckets" : [
+        {
+          "key_as_string" : "2019-01-01",
+          "key" : 1546300800000,
+          "doc_count" : 0
+        },
+        {
+          "key_as_string" : "2019-02-01",
+          "key" : 1548979200000,
+          "doc_count" : 0
+        },
+        {
+          "key_as_string" : "2019-03-01",
+          "key" : 1551398400000,
+          "doc_count" : 0
+        },
+        {
+          "key_as_string" : "2019-04-01",
+          "key" : 1554076800000,
+          "doc_count" : 0
+        },
+        {
+          "key_as_string" : "2019-05-01",
+          "key" : 1556668800000,
+          "doc_count" : 0
+        },
+        {
+          "key_as_string" : "2019-06-01",
+          "key" : 1559347200000,
+          "doc_count" : 0
+        },
+        {
+          "key_as_string" : "2019-07-01",
+          "key" : 1561939200000,
+          "doc_count" : 0
+        },
+        {
+          "key_as_string" : "2019-08-01",
+          "key" : 1564617600000,
+          "doc_count" : 0
+        },
+        {
+          "key_as_string" : "2019-09-01",
+          "key" : 1567296000000,
+          "doc_count" : 0
+        },
+        {
+          "key_as_string" : "2019-10-01",
+          "key" : 1569888000000,
+          "doc_count" : 0
+        },
+        {
+          "key_as_string" : "2019-11-01",
+          "key" : 1572566400000,
+          "doc_count" : 0
+        },
+        {
+          "key_as_string" : "2019-12-01",
+          "key" : 1575158400000,
+          "doc_count" : 0
+        },
+        {
+          "key_as_string" : "2020-01-01",
+          "key" : 1577836800000,
+          "doc_count" : 0
+        },
+        {
+          "key_as_string" : "2020-02-01",
+          "key" : 1580515200000,
+          "doc_count" : 0
+        },
+        {
+          "key_as_string" : "2020-03-01",
+          "key" : 1583020800000,
+          "doc_count" : 0
+        },
+        {
+          "key_as_string" : "2020-04-01",
+          "key" : 1585699200000,
+          "doc_count" : 0
+        },
+        {
+          "key_as_string" : "2020-05-01",
+          "key" : 1588291200000,
+          "doc_count" : 1
+        },
+        {
+          "key_as_string" : "2020-06-01",
+          "key" : 1590969600000,
+          "doc_count" : 0
+        },
+        {
+          "key_as_string" : "2020-07-01",
+          "key" : 1593561600000,
+          "doc_count" : 1
+        },
+        {
+          "key_as_string" : "2020-08-01",
+          "key" : 1596240000000,
+          "doc_count" : 1
+        },
+        {
+          "key_as_string" : "2020-09-01",
+          "key" : 1598918400000,
+          "doc_count" : 0
+        },
+        {
+          "key_as_string" : "2020-10-01",
+          "key" : 1601510400000,
+          "doc_count" : 1
+        },
+        {
+          "key_as_string" : "2020-11-01",
+          "key" : 1604188800000,
+          "doc_count" : 2
+        },
+        {
+          "key_as_string" : "2020-12-01",
+          "key" : 1606780800000,
+          "doc_count" : 0
+        },
+        {
+          "key_as_string" : "2021-01-01",
+          "key" : 1609459200000,
+          "doc_count" : 1
+        },
+        {
+          "key_as_string" : "2021-02-01",
+          "key" : 1612137600000,
+          "doc_count" : 1
+        }
+      ]
+    }
+  }
+}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
