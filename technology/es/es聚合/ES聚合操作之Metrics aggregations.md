@@ -27,6 +27,7 @@ GET /television/_search
    }
 }
 ```
+结果如下：
 ![metric聚合计算每种颜色电视平均值.png](https://upload-images.jianshu.io/upload_images/9905084-b85757628592f332.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 其中
@@ -36,10 +37,11 @@ avg（一个AGG_TYPE），对之前的每个bucket中的数据的指定的field�
 对每个bucket都要执行的一个metric操作。
 
 返回结果说明：
-buckets，除了key和doc_count
-avg_price：我们自己取的metric aggs的名字
-value：我们的metric计算的结果，每个bucket中的数据的price字段求平均值后的结果
+- buckets：聚合结果的数组，key和doc_count，bucket aggs已介绍
+- avg_price：我们自己取的metric aggs的名字
+- value：我们的metric计算的结果，即每个bucket中的数据的price字段求平均值后的结果
 
-select avg(price)
-from tvs.sales
-group by color
+上面这串脚本相当于MySQL的如下语法：
+```
+select avg(price) from television group by color
+```

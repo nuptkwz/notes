@@ -62,6 +62,7 @@ GET /television/_search
     }
 }
 ```
+结果如下：
 ![bucket聚合按照color进行分组.png](https://upload-images.jianshu.io/upload_images/9905084-bd5f2f8395fd365b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 其中
