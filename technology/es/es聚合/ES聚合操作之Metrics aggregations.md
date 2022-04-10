@@ -2,7 +2,14 @@
 >本文主要介绍了es聚合操作中的Metrics aggregations,metrics聚合又称为指标聚合，对桶内的文档进行某种
  聚合分析的操作，比如说求平均值，求最大值，求最小值。类似于MySQL中的COUNT()、SUM()、MAX()等。
 
-# 1. Metrics Bucket聚合例子
+# 1. metric聚合类型(AGG_TYPE)
+metric聚合类型主要有count，avg，max，min，sum等 
+- avg：求平均值
+- max：求一个bucket内指定field值最大的那个数据
+- min：求一个bucket内指定field值最小的那个数据
+- sum： 求一个bucket内指定field值的总和
+
+# 2. Metrics聚合例子
 按照color去分bucket，可以得到每种color bucket的数量，这个仅仅只是一个bucket操作，doc_count其实只是es的bucket操作默认执行的一个内置metric。
 metric聚合就是除了对bucket操作进行聚合分组外，对每个bucket进行聚合统计等。下面介绍一下利用Metrics Bucket进行聚合的例子。
 
@@ -45,3 +52,88 @@ avg（一个AGG_TYPE），对之前的每个bucket中的数据的指定的field�
 ```
 select avg(price) from television group by color
 ```
+
+2 按照多个维度嵌套聚合
+从颜色到品牌进行嵌套聚合，计算每种颜色的平均价格，以及找到每种颜色每个品牌的平均价格。例如：已经对各种
+家电按照颜色进行分组了，还要对这个组里面的数据进行再分组，例如在一个颜色内按照品牌再分组，然后再对每个
+小组里面的数据再进行聚合分析操作
+```
+GET /television/_search
+{
+  "size": 0,
+  "aggs": {
+    "group_by_color": {
+      "terms": {
+        "field": "color"
+      },
+      "aggs": {
+        "color_avg_price": {
+          "avg": {
+            "field": "price"
+          }
+        },
+        "group_by_brand":{
+          "terms": {
+            "field": "brand"
+          },
+          "aggs": {
+            "brand_avg_price": {
+              "avg": {
+                "field": "price"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+结果如下：
+![es按照颜色的品牌嵌套聚合.png](https://upload-images.jianshu.io/upload_images/9905084-b85757628592f332.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+3 按照多种类型聚合
+按照多种类型聚合，分别计算出按照color分组后每组数据价格的平均值、最小值、最大值、总数
+```
+GET /television/_search
+{
+  "size": 0,
+  "aggs": {
+    "group_by_color": {
+      "terms": {
+        "field": "color"
+      },
+      "aggs": {
+        "avg_price": {
+          "avg": {
+            "field": "price"
+          }
+        },
+        "min_price": {
+          "min": {
+            "field": "price"
+          }
+        },
+        "max_price": {
+          "max": {
+            "field": "price"
+          }
+        },
+        "sum_price": {
+          "sum": {
+            "field": "price"
+          }
+        }
+      }
+    }
+  }
+}
+```
+结果如下：
+![按照多种类型聚合.png](https://upload-images.jianshu.io/upload_images/9905084-7a11645d94d9c9e6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+
+
+
+
+
