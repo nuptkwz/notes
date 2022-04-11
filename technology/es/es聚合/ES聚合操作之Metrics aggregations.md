@@ -180,12 +180,12 @@ GET /television/_search
 结果如下：
 ![histogram聚合.png](https://upload-images.jianshu.io/upload_images/9905084-fb14af20c50ee1d0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-4 按照日期间隔划分-date histogram
+5 按照日期间隔划分-date histogram
 date histogram也是划分不同bucket的一种方法，它是按照我们指定的某个date类型的日期field，以及日期
 interval，去划分bucket
 - calendar_interval
   calendar_interval，对应的值为1y,1M,1d等。
-  如果calendar_interval：1M，则2019-01-01~2019-01-31，就是一个bucket，2019-02-01~2019-02-28，就是一个
+  如果calendar_interval：1M，则2019-01-01 -- 2019-01-31，就是一个bucket，2019-02-01 -- 2019-02-28，就是一个
   bucket
 - min_doc_count：0
   即使某个interval如2019-01-01~2017-01-31中一条数据都没有，那么这个区间也是要返回的，不然默认是会过滤掉这个区间的
@@ -370,8 +370,37 @@ GET /television/_search?size=0
 
 ```
 
+6 基于搜索结果的聚合
+搜索小米电视机，并且按照颜色进行聚合
+```
+GET /television/_search
+{
+  "size": 0,
+  "query": {
+    "term": {
+      "brand": {
+        "value": "小米"
+      }
+    }
+  },
+  "aggs": {
+    "group_by_color": {
+      "terms": {
+        "field": "color"
+      }
+    }
+  }
+}
+```
+结果如下：
+![基于搜索结果的聚合.png](https://upload-images.jianshu.io/upload_images/9905084-553bebf67b0bd0e9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
+以上脚本类似于MySql语法
+```
+select count(*) from television where brand = "小米" group by price
+```
 
+7 基于搜索聚合和全部聚合
 
 
 
