@@ -401,10 +401,44 @@ select count(*) from television where brand = "小米" group by price
 ```
 
 7 基于搜索聚合和全部聚合
+```
+GET /television/_search
+{
+  "size": 0,
+  "query": {
+    "term": {
+      "brand": {
+        "value": "小米"
+      }
+    }
+  },
+  "aggs": {
+    "single_brand_avg_price": {
+      "avg": {
+        "field": "price"
+      }
+    },
+    "all": {
+      "global": {},
+      "aggs": {
+        "all_brand_avg_price": {
+          "avg": {
+            "field": "price"
+          }
+        }
+      }
+    }
+  }
+}
+```
+结果如下：
+![基于搜索聚合和全部聚合.png](https://upload-images.jianshu.io/upload_images/9905084-aabef121847e75f3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-
-
-
+其中
+请求参数说明：
+- global：就是global bucket，将所有数据纳入聚合的scope，而不管之前的query条件
+- single_brand_avg_price：针对query搜索结果执行，拿到的就是小米电视品牌的平均价格
+- all.all_brand_avg_price：忽略query条件，拿到是所有电视品牌的平均价格
 
 
 
