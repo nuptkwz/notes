@@ -440,6 +440,8 @@ GET /television/_search
 - single_brand_avg_price：针对query搜索结果执行，拿到的就是小米电视品牌的平均价格
 - all.all_brand_avg_price：忽略query条件，拿到是所有电视品牌的平均价格
 
+8 基于过滤结果的聚合
+
 
 
 
