@@ -441,7 +441,35 @@ GET /television/_search
 - all.all_brand_avg_price：忽略query条件，拿到是所有电视品牌的平均价格
 
 8 基于过滤结果的聚合
+过滤出价格大于1200但是小于2000的电视机，并算出他们的平均值
+```
+GET /television/_search
+{
+  "size": 0,
+  "query": {
+    "constant_score": {
+      "filter": {
+        "range": {
+          "price": {
+            "gte": 1200,
+            "lte": 2000
+          }
+        }
+      }
+    }
+  },
+  "aggs": {
+    "avg_price": {
+      "avg": {
+        "field": "price"
+      }
+    }
+  }
+}
+```
 
+结果如下：
+![基于过滤结果的聚合.png](https://upload-images.jianshu.io/upload_images/9905084-00f78337d45d2df6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 
 
