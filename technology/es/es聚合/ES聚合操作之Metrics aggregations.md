@@ -471,6 +471,91 @@ GET /television/_search
 结果如下：
 ![基于过滤结果的聚合.png](https://upload-images.jianshu.io/upload_images/9905084-00f78337d45d2df6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
+9 对不同的bucket下的聚合进行过滤
+统计近20个月和18个月电视销售的平均价格
+```
+# 对不同bucket下的agg进行聚合
+GET /television/_search
+{
+  "size": 0,
+  "query": {
+    "term": {
+      "brand": {
+        "value": "长虹"
+      }
+    }
+  },
+  "aggs": {
+    "recent_600d": {
+      "filter": {
+        "range": {
+          "sold_date": {
+            "gte": "now-600d"
+          }
+        }
+      },
+      "aggs": {
+        "recent_600d_avg_price": {
+          "avg": {
+            "field": "price"
+          }
+        }
+      }
+    },
+    "recent_530d":{
+      "filter": {
+        "range": {
+          "sold_date": {
+            "gte": "now-530d"
+          }
+        }
+      },
+      "aggs": {
+          "recent_530d_avg_price": {
+            "avg": {
+              "field": "price"
+            }
+          }
+      }
+    }
+  }
+}
+```
+
+结果如下：
+![对不同的bucket下的聚合进行过滤.png](https://upload-images.jianshu.io/upload_images/9905084-88787e28b93c9f2d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+
+10 指定聚合字段进行排序
+```
+# 指定聚合字段进行排序
+GET /television/_search
+{
+  "size": 0,
+  "aggs": {
+    "group_by_color": {
+      "terms": {
+        "field": "color",
+        "order": {
+          "avg_price": "asc"
+        }
+      },
+      "aggs": {
+        "avg_price": {
+          "avg": {
+            "field": "price"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+结果如下：
+![指定聚合字段进行排序.png](https://upload-images.jianshu.io/upload_images/9905084-a95bbfbf51101d8b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+
 
 
 
