@@ -555,6 +555,40 @@ GET /television/_search
 结果如下：
 ![指定聚合字段进行排序.png](https://upload-images.jianshu.io/upload_images/9905084-a95bbfbf51101d8b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
+11 颜色+品牌下钻分析按最深层的metric进行排序
+```
+GET /television/_search
+{
+  "size": 0,
+  "aggs": {
+    "group_by_color": {
+      "terms": {
+        "field": "color"
+      },
+      "aggs": {
+        "group_by_brand": {
+          "terms": {
+            "field": "brand",
+            "order": {
+              "avg_price": "asc"
+            }
+          },
+          "aggs": {
+            "avg_price": {
+              "avg": {
+                "field": "price"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+结果如下：
+![颜色+品牌下钻分析按最深层的metric进行排序.png](https://upload-images.jianshu.io/upload_images/9905084-0489f2fb7c262788.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 
 
