@@ -31,6 +31,69 @@ GET /television/_search
 结果如下：
 ![通过cardinality进行去重.png](https://upload-images.jianshu.io/upload_images/9905084-b689654adb7c3c43.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-2. 通过cardinality进行去重
+2. cardinality的参数优化
+cardinality类似于count(distinct)，不是完全准确的，可能还有5%的错误率，性能在100ms左右
+- precision_threshold优化准确率和内存开销
+  precision_threshold表示在多少个unique value以内，cardinality，几乎保证100%准确。例如：
+利用brand进行去重，如果brand的unique value，在100个以内，小米，长虹等，它可以保证几乎保证100%准确。
+cardinality算法，会占用precision_threshold * 8 byte 内存消耗，如precision_threshold=100，则占用字节数为：100 * 8 = 800个字节
+它占用内存很小。而且unique value如果的确在值以内，那么可以确保100%准确。precision_threshold=100，也表示数百万的unique value，错误率在5%以内。
+precision_threshold，值设置的越大，占用内存越大，1000 * 8 = 8000 / 1000 = 8KB，可以确保更多unique value的场景下，100%的准确。在使用
+precision_threshold参数的时候结合使用场景、内存考虑
+脚本示例：
+```
+#cartinality
+GET /television/_search
+{
+  "size": 0,
+  "aggs": {
+    "distinct_brand": {
+      "cardinality": {
+        "field": "brand",
+        "precision_threshold": 100
+      }
+    }
+  }
+}
+```
 
+- HyperLogLog++ (HLL)算法性能优化
+cardinality的底层算法使用了HLL，如果要去优化cardinality需要优化HLL算法的性能
+底层会对所有的unique value取hash值，通过hash值近似去求distinct count，所以还有一些误差。如果要优化它的性能，默认情况下，发送一个
+cardinality的时候，它会动态的对所有的field value取hash值。如果要优化性能，可以将取hash值的操作前移到建立索引的时候，例如：
+索引映射脚本示例：
+```
+PUT /television/
+{
+  "mappings": {
+    "sales": {
+      "properties": {
+        "brand": {
+          "type": "text",
+          "fields": {
+            "hash": {
+              "type": "murmur3" 
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
 
+优化后的distinct使用聚合示例
+```
+GET /television/_search
+{
+    "size" : 0,
+    "aggs" : {
+        "distinct_brand" : {
+            "cardinality" : {
+              "field" : "brand.hash",
+              "precision_threshold" : 100 
+            }
+        }
+    }
+}
+```
