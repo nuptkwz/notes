@@ -107,4 +107,87 @@ tp90：90%的请求的耗时最长在多长时间
 tp99：99%的请求的耗时最长在多长时间
 ```
 例子如下：
+- tp50，tp90，tp99数据
 批量插入一批数据，如下：
+```
+POST /website/_bulk
+{"index":{}}
+{"latency":105,"province":"江苏","timestamp":"2020-10-28"}
+{"index":{}}
+{"latency":83,"province":"江苏","timestamp":"2020-10-29"}
+{"index":{}}
+{"latency":92,"province":"江苏","timestamp":"2020-10-29"}
+{"index":{}}
+{"latency":112,"province":"江苏","timestamp":"2020-10-28"}
+{"index":{}}
+{"latency":68,"province":"江苏","timestamp":"2020-10-28"}
+{"index":{}}
+{"latency":76,"province":"江苏","timestamp":"2020-10-29"}
+{"index":{}}
+{"latency":101,"province":"新疆","timestamp":"2020-10-28"}
+{"index":{}}
+{"latency":275,"province":"新疆","timestamp":"2020-10-29"}
+{"index":{}}
+{"latency":166,"province":"新疆","timestamp":"2020-10-29"}
+{"index":{}}
+{"latency":654,"province":"新疆","timestamp":"2020-10-28"}
+{"index":{}}
+{"latency":389,"province":"新疆","timestamp":"2020-10-28"}
+{"index":{}}
+{"latency":302,"province":"新疆","timestamp":"2020-10-29"}
+```
+查看tp50,tp90,tp99的数据：
+```
+GET /website/_search
+{
+  "size": 0,
+  "aggs": {
+    "lantency_percentiles": {
+      "percentiles": {
+        "field": "latency",
+        "percents": [
+          50,
+          90,
+          99
+        ]
+      }
+    },
+    "lantency_avg": {
+      "avg": {
+        "field": "latency"
+      }
+    }
+  }
+}
+```
+结果数据如下：
+```
+{
+  "took" : 0,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 1,
+    "successful" : 1,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : {
+      "value" : 12,
+      "relation" : "eq"
+    },
+    "max_score" : null,
+    "hits" : [ ]
+  },
+  "aggregations" : {
+    "lantency_percentiles" : {
+      "values" : {
+        "50.0" : 108.5,
+        "90.0" : 468.5000000000002,
+        "99.0" : 654.0
+      }
+    }
+  }
+}
+```
+- tp50，tp90，tp99数据，
