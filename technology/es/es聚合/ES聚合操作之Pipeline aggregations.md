@@ -194,7 +194,82 @@ GET /website/_search
 
 4. percentiles rank metric以及网站访问时延SLA统计
 SLA: 提供的网络服务标准
-网站的提供的访问延时的SLA，要确保所有的请求100%都必须在200ms以内，如果超过1s，代表网站的访问性能和用户体验急剧下降
-- 例子：统计在在200ms以内的，有百分之多少，在1000毫秒以内的有百分之多少
+网站的提供的访问延时的SLA，要确保所有的请求100%都必须在200ms以内，如果超过1s，代表网站的访问性能和用户体验急剧下降,
 percentile ranks metric比percentile还要常用，下面按照品牌分组，计算，电视机，售价在1000占比，2000占比，3000占比
+- 例子：统计在在200ms以内的，有百分之多少，在1000毫秒以内的有百分之多少
+```
+GET /website/_search
+{
+  "size": 0,
+  "aggs": {
+    "group_by_province": {
+      "terms": {
+        "field": "province.keyword"
+      },
+      "aggs": {
+        "latency_percentile_ranks": {
+          "percentile_ranks": {
+            "field": "latency",
+            "values": [
+              200,
+              1000
+            ]
+          }
+        }
+      }
+    }
+  }
+}
+```
+结果如下：
+```
+{
+  "took" : 76,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 1,
+    "successful" : 1,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : {
+      "value" : 12,
+      "relation" : "eq"
+    },
+    "max_score" : null,
+    "hits" : [ ]
+  },
+  "aggregations" : {
+    "group_by_province" : {
+      "doc_count_error_upper_bound" : 0,
+      "sum_other_doc_count" : 0,
+      "buckets" : [
+        {
+          "key" : "新疆",
+          "doc_count" : 6,
+          "latency_percentile_ranks" : {
+            "values" : {
+              "200.0" : 29.40613026819923,
+              "1000.0" : 100.0
+            }
+          }
+        },
+        {
+          "key" : "江苏",
+          "doc_count" : 6,
+          "latency_percentile_ranks" : {
+            "values" : {
+              "200.0" : 100.0,
+              "1000.0" : 100.0
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+```
+
 
