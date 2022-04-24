@@ -18,7 +18,7 @@
 可以看到如果用like查询的话，%在右边会命中索引的，而%在左边则不会。当然这也不是绝对的，当我们使用索引列进行查询的时候，就都会命中索引了：
 ![image.png](https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85OTA1MDg0LTRkNTA2ZDZmMDQyNzEyZjUucG5n?x-oss-process=image/format,png)
 ## 负向查询条件会不会用到索引？
-NOT IN,NOT LIKE,NOT EXTSTS都不会命中索引
+NOT IN,NOT LIKE,NOT EXISTS都不会命中索引
 
 
 
