@@ -50,11 +50,23 @@ symbolic-links=0
 ```
 
 # 启动mysql服务器
+到/usr/local/mysql/support-files目录下，启动
+```
+启动
+./mysql.server start
+或者
+service mysql start
 ```
 
-```
+# 登陆mysql
+
 
 # 遇到的巨坑
 用root用户执行mysqld 跟mysqld_safe 不加--user=root参数 指定用户时会报错的
 [启动mysql服务时一直提示ERROR! The server quit without updating PID file
 ](https://blog.csdn.net/zqin0/article/details/106444580/)
+
+# 参考
+1. [Linux下安装mysql-5.7.24](https://www.jianshu.com/p/276d59cbc529)
+2. []()
+3. []()
