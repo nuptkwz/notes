@@ -42,6 +42,10 @@ source /etc/profile
 # 验证
 执行Java的打印版本命令：
 ```
+java -version
+```
+显示：
+```
 java version "1.8.0_321"
 Java(TM) SE Runtime Environment (build 1.8.0_321-b07)
 Java HotSpot(TM) 64-Bit Server VM (build 25.321-b07, mixed mode)
