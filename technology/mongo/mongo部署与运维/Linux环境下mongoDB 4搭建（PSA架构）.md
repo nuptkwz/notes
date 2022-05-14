@@ -1,6 +1,6 @@
 > 本文主要介绍了Linux环境下mongoDB副本集模式的搭建（一主一从一仲裁），具体包括了搭建步骤、主从切换、高可用测试等。
 # 架构图
-![一主一从一仲裁](https://img-blog.csdnimg.cn/20200927215732828.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzIyNzk3NDI5,size_16,color_FFFFFF,t_70#pic_center)
+![一主一从一仲裁](./images/一主一从一仲裁.png)
 # 环境
 - Ubuntu 5.4.0-6ubuntu1~16.04.12
 - mongodb-linux-x86_64-ubuntu1604-4.2.8.tgz
