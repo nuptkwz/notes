@@ -75,7 +75,7 @@
 ```
 ## 配置application.yml
 我搭的mongodb没加密码，比较简单的配置，可以通过官网提供的方式，也可以通过uri的方式，如下：
-```xml
+```yml
 spring:
   data:
     mongodb:
@@ -217,9 +217,9 @@ public interface CommentRepository extends MongoRepository<Comment,String> {
 - 保存评论
 
 里面postman测试如下：
-![保存评论postman测试](https://upload-images.jianshu.io/upload_images/9905084-c8205a80d44115b5?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![保存评论postman测试](./images/保存评论postman测试.png)
 - 评论列表
-![评论列表postman测试](https://upload-images.jianshu.io/upload_images/9905084-9d4e040f40bcb105?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![评论列表postman测试](./images/评论列表postman测试.png)
 # 总结
 本文主要介绍了通过SpringDataMongoDB操作连接MongoDB操作数据库的过程
 

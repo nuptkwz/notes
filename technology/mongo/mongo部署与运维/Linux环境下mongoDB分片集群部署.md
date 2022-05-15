@@ -8,11 +8,11 @@ MongoDB分片集群包含以下组件：
 - config servers（“调度”的配置）：配置服务器存储集群的元数据和配置设置。从mongoDB 3.4开始，必须将配置服务器部署为副本集（CSRS）
 
 下图描述了分片集群中组件的交互：
-![mongoDB分片集群](https://upload-images.jianshu.io/upload_images/9905084-5a93f7dd7a2a3f4d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![mongoDB分片集群](./images/mongoDB分片集群.png)
 
 # 分片集群架构
 本文搭建的副本集集群是两个分片节点副本集（3+3）+一个配置节点副本集（3）+两个路由节点（2），共11个服务节点，具体如下图所示：
-![mongoDB分片集群架构](https://upload-images.jianshu.io/upload_images/9905084-53db2d9118f06ba2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![mongoDB分片集群架构](./images/mongoDB分片集群架构.png)
 # 分片集群搭建
 ## 第一套副本集
 本次搭建一主一副本一仲裁，相关的配置文件、数据、日志都放在sharded_cluster相应的子目录下面，具体步骤如下：
