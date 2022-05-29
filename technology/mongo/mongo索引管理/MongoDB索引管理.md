@@ -8,3 +8,6 @@ MongoDB支持在文档的单个字段上创建用户定义的升序/降序索引
 ![image.png](https://upload-images.jianshu.io/upload_images/9905084-407957fb2677c896.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 ## 复合索引
+
+
+## TTL索引
