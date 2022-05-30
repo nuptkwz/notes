@@ -1,10 +1,12 @@
 # 前言
 >本文介绍了SpringBoot集成了MongoDB，利用SpringDataMongodb操作文章的评论的增、删、改、查过程。
+
 # 环境
 - spring-boot（2.1.6）
 - mongodb(4.2.8)
 - spring-boot-starter-data-mongodb
 - IntelliJ IDEA (2019)
+
 # 微服务模块搭建
 ## 搭建SpringBoot项目
 比较简单，不再赘述
@@ -221,7 +223,7 @@ public interface CommentRepository extends MongoRepository<Comment,String> {
 - 评论列表
 ![评论列表postman测试](./images/评论列表postman测试.png)
 # 总结
-本文主要介绍了通过SpringDataMongoDB操作连接MongoDB操作数据库的过程
+本文主要介绍了通过SpringData-MongoDB操作连接MongoDB操作数据库的过程
 
 参考：
 1. [https://github.com/nuptkwz/notes/blob/master/technology/mongo/Linux%E7%8E%AF%E5%A2%83%E4%B8%8BmongoDB%204%E6%90%AD%E5%BB%BA%EF%BC%88%E5%8D%95%E6%9C%BA%E6%A8%A1%E5%BC%8F%EF%BC%89.md](https://github.com/nuptkwz/notes/blob/master/technology/mongo)
