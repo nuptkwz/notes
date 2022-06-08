@@ -1,15 +1,18 @@
 @[toc]
 # 前言
 > mybatis-generator工具是用来生成mybatis的model,mapper,dao持久层代码。本文结合现在主流的构建工具是gradle，连接数据库自动生成相应代码。虽然mybatis-generator没有提供gradle的插件，但是可以用gradle调用ant任务，因此，gradle也能间接启动mybatis-generator。
+
 # 环境
  - **JDK 1.8**
  - **IntelliJ IDEA 2017.2.2**
  - **Gradle 3.5.0**
  - **mysql**
+
 # 配置
 以shopmall-order订单服务为例，通过配置shopmall-order.gradle和generator.xml两个文件，来自动生成相应entity、mapper、xml等。
+
 ### shopmall-order.gradle
-```xml
+```
 description = '''shopmall-order'''
 
 dependencies {
@@ -25,8 +28,9 @@ mybatisGenerator {
     configFile = 'src/main/resources/generator.xml'
 }
 ```
+
  ### generator.xml
- ```xml
+ ```
  <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE generatorConfiguration
   PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
