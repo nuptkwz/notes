@@ -88,15 +88,41 @@ db.collection.dropIndex(index)
 - 是否存在低效的内存排序？
 
 MongoDB提供了explain命令，它可以帮助我们指定查询模型（querymodel）的执行计划，根据实际情况进行调整，
-然后提高查询效率。
+然后提高查询效率。比如你扫描了大量的集合，没有用到索引等，这些都是可以去优化的。
+explain方法的形式如下：
+```javascript
+db.collection.find().explain(<berbose>)
+```
+berbose可选模式有3种。
+- queryPlanner
+![queryPlanner模式](./images/index_explain_queryPlanner.png)
+
+
+- executionStats
+executionStats模式的返回信息中包括了queryPlanner模式的所有字段，并且包含了最佳执行计划的执行情况。
+![executionStats模式](./images/index_explain_executionStats.png)
+
+- allPlansExecution
+allPlansExecution返回的信息包含executionStats模式的内容，且包含allPlansExecution:[]块
+
 
 语法：
 ```javascript
 db.collection.find(query,options).explain(options)
 ```
 执行计划中的stage类型
+![stage类型](./images/index_explain_stage.png)
 - COLLSCAN : 集合扫描，说明没有用到索引走的是全表扫描
-- FETCH : 抓取
+- FETCH : 抓取，根据索引去检索
+
+执行计划的返回结果中尽量不要出现以下的stage：
+- COLLSCAN(全表扫描)，数据小无所谓，数据大了可能就会导致慢查询了
+- SORT(使用sort但是无index)：尽量使用索引的排序，特别是复合索引
+- 不合理的SKIP
+- SUBPLA(未用到index的$or)
+- COUNTSCAN(不使用index进行count)
+
+
 
 ## 涵盖的查询（Covered Queries）
 当查询条件和查询的投影仅包含索引的字段时，MongoDB直接从索引返回结果，而不扫描任何文档或将文档带入到内存。
