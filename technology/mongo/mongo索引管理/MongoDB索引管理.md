@@ -66,6 +66,14 @@ ns:namespace,是哪个数据库下面的哪个个集合
 db.books.getIndexKeys()
 ```
 
+查看索引的占用空间
+```javascript
+db.collection.totalIndexSize([is_detail])
+```
+is_detail:可选参数，传入0或者false外的任意数据，都会显示该集合每个索引的大小以及总大小。如果传入0或者false
+则只显示该集合中所有索引的总大小。默认为false。
+
+
 ## 创建索引
 ```javascript
 db.collection.createIndex(keys,options)
@@ -79,6 +87,7 @@ db.collection.createIndex({open:1,close:1},{background:true})
 //创建唯一索引
 db.collection.createIndex({title:1},{unique:true})
 ```
+
 
 - 单字段索引创建
 
