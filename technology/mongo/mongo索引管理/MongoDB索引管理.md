@@ -3,9 +3,20 @@
 索引支持在MongoDB中高效地执行查询。如果没有索引，MongoDB必须执行全集合扫描，即扫描集合中的每个文档，以选择与查询语句匹配的文档。
 这种扫描全集合的查询效率是非常低的，特别在处理大量的数据时，查询可以要花费几十秒甚至几分钟，这对网站的性能是非常致命的。
 
+# 索引的介绍
+## 索引介绍
 如果查询存在适当的索引，MongoDB可以使用该索引限制必须检查的文档数。索引是特殊的数据结构，它以易于遍历的形式存储集合数据集的一小部分。
 索引存储特定字段或一组字段的值，按字段值排序。索引项的排序支持有效的相等匹配和基于范围的查询操作。此外，MongoDB还可以使用索引中的排序
-返回排序结果。MongoDB索引使用B树数据结构(MySQL用的是B+Tree)。
+返回排序结果。MongoDB索引使用B树数据结构(MySQL用的是B+Tree，其实准确的来说MongoDB使用的就是B+Tree)。
+
+## 索引的分类
+不同的分类维度，可以分成不同的组
+- 按照索引包含的字段数量，可以分为单键索引和组合索引（复合索引）
+- 按照索引的字段类型，可以分为主键索引和非主键索引
+- 按照索引节点与物理节点的对应方式来分，可以分为聚簇索引和非聚簇索引，其中聚簇索引指的是索引节点上直接包含了数据记录，而后者仅仅是包含
+一个指向数据记录的指针。
+- 按照索引的特性不同，又可以分为唯一索引、稀疏索引、文本索引、地理空间索引等。
+
 
 # 索引的类型
 ## 单字段索引
@@ -50,11 +61,24 @@ key：表示你在哪个字段上加的索引，1表示你这个索引创建的�
 name：索引的名称，默认是xx_1(或者xx_-1)
 ns:namespace,是哪个数据库下面的哪个个集合
 
+```javascript
+//查看索引键
+db.books.getIndexKeys()
+```
+
 ## 创建索引
 ```javascript
 db.collection.createIndex(keys,options)
 ```
 参数的可以选项options：
+![索引的可以选项](./images/index_create_options.png)
+3.0.0版本之前创建索引方法为：db.collection.ensureIndex()
+```javascript
+//创建索引后台执行
+db.collection.createIndex({open:1,close:1},{background:true})
+//创建唯一索引
+db.collection.createIndex({title:1},{unique:true})
+```
 
 - 单字段索引创建
 
@@ -90,7 +114,7 @@ db.collection.dropIndex(index)
 MongoDB提供了explain命令，它可以帮助我们指定查询模型（querymodel）的执行计划，根据实际情况进行调整，
 然后提高查询效率。比如你扫描了大量的集合，没有用到索引等，这些都是可以去优化的。
 explain方法的形式如下：
-```javascript
+```
 db.collection.find().explain(<berbose>)
 ```
 berbose可选模式有3种。
@@ -128,3 +152,7 @@ db.collection.find(query,options).explain(options)
 当查询条件和查询的投影仅包含索引的字段时，MongoDB直接从索引返回结果，而不扫描任何文档或将文档带入到内存。
 这些覆盖的查询效率是非常高的。
 
+
+
+# 参考
+1. https://www.modb.pro/db/332028
