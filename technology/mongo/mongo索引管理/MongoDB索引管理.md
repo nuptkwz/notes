@@ -103,6 +103,70 @@ db.inventory.find( { "stock.size": "L", "stock.quantity": {$gt:20} } )
 db.inventory.find( { "stock.size": "L", "stock.quantity": {$gt:20} } ).explain()
 ```
 
+## Hash索引（Hashed Indexes）
+和传统的B-Tree索引不同，哈希索引使用了hash函数来创建索引。在索引字段上进行精确匹配，但不支持查询范围，不
+支持多键hash,Hash索引上的入口是均匀分布的，在分片集合中非常有用；
+例如：
+```javascript
+db.users.createIndex({username:'hashed'})
+```
+
+## 全文索引
+MongoDB支持全文索引(Text Indexes)功能，可以通过建立文本索引来实现简易的分词检索。
+创建索引：
+```javascript
+db.reviews.createIndex({comments:"text"})
+```
+
+## TTL索引
+有时候在我们的系统里，并非所有的数据都需要永久存储。例如一些系统事件、用户消息等，这些数据随着时间的推移，
+它的重要长度逐渐降低。更重要的是，存储这些大量的历史数据需要花费较高的成本，因此项目对这些过期不再使用的
+数据进行老化处理。
+通常的做法如下：
+- 为每个数据记录一个时间戳，开启一个定时器，按时间戳定时删除过期的数据
+- 数据安日期进行分表，同一天的数据归档到同一张表，同样使用定时器删除对应的表
+
+对应这些数据，MongoDB提供了一种更加便捷的做法：TTL(Time To Live)索引。TTL索引需要申明在一个日期类型的字段
+中，TTL索引是一个特殊的单字段索引，MongoDB可以使用它在一定时间或者特定时钟时间后自动从集合中删除文档。
+
+创建TTL索引，TTL值为60s，
+```javascript
+db.eventlog.createIndex( { "lastModifiedDate": 1 }, { expireAfterSeconds: 60 } )
+```
+
+对集合创建TTL索引之后，MongoDB会使用周期性运行的后台线程中对该集合进行检查及数据清理工作，除了数据老化功能
+TTL索引具有普通索引的功能，同样可以加速数据的查询。
+
+TTL索引不保证过期的数据会在过期后立即被删除。文档过期和MongoDB从数据库中删除文档的时间之间可能存在延迟。删除
+过期文档的后台任务每60秒运行一次。因此，在文档到期和后台任务运行之间的时间段内，文档可能会保留在集合中。
+
+例如：
+准备数据：
+```javascript
+db.log_events.insertOne( {
+   "createdAt": new Date(),
+   "logEvent": 2,
+   "logMessage": "Success!"
+} )
+```
+
+创建TTL索引：
+```javascript
+db.log_events.createIndex( { "createdAt": 1 }, { expireAfterSeconds: 10 } )
+```
+
+TTL索引创建之后，仍然可以对过期的时间进行修改。这需要使用collMod命令对索引的定义进行变更
+可变的过期时间：
+```javascript
+db.runCommand({
+  "collMod": "log_events",
+  "index": {
+    "keyPattern": { "lastModifiedDate": 1 },
+    "expireAfterSeconds": 100
+  }
+})
+```
+
 ## 其他索引
 MongoDB除了默认的id索引，单字段索引，复合索引，还有其他的一些索引。如地理空间索引(Geospatial Index)、
 文本索引（Text Indexes）、哈希索引（Hashed Indexes）。
