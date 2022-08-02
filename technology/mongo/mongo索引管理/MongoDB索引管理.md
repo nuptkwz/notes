@@ -33,6 +33,76 @@ MongoDB还支持多个字段的索引，即复合索引（Compound index）。�
 例如如果复合索引由{userId:1,score:-1}组成，则索引首先通过ask的顺序按照userId正序排序，然后在每个
 userId内，再按照core倒序排序(比如图中的ca2三个一样，然后在内部再做一个userId的降序排序)。
 
+## 多键索引
+在数组的属性上建立索引，针对这个数组的任意值的查询都会定位到这个文档，既多个索引入口或者键值引用同一个文档
+![mongo多键索引](./images/index_multikey.png)
+创建集合：
+```
+db.inventory.insertMany([
+{ _id: 5, type: "food", item: "aaa", ratings: [ 5, 8, 9 ] }
+{ _id: 6, type: "food", item: "bbb", ratings: [ 5, 9 ] }
+{ _id: 7, type: "food", item: "ccc", ratings: [ 9, 5, 8 ] }
+{ _id: 8, type: "food", item: "ddd", ratings: [ 9, 5 ] }
+{ _id: 9, type: "food", item: "eee", ratings: [ 5, 9, 5 ] }
+])
+```
+创建多键索引：
+```javascript
+db.inventory.createIndex( { ratings: 1 } )
+```
+多键索引很容易与复合索引产生混淆，复合索引是多个字段的组合，而多键索引仅仅是在一个字段上出现了多键（multi key）。
+而实质上，多键索引也可以出现在复合字段上。
+```javascript
+//创建复合多键索引
+db.inventory.createIndex( { item:1,ratings: 1} )
+```
+注意：MongoDB并不支持一个复合索引中同时出现多个数组字段
+嵌入文档的索引数组：
+```
+db.inventory.insertMany([
+{
+  _id: 1,
+  item: "abc",
+  stock: [
+    { size: "S", color: "red", quantity: 25 },
+    { size: "S", color: "blue", quantity: 10 },
+    { size: "M", color: "blue", quantity: 50 }
+  ]
+},
+{
+  _id: 2,
+  item: "def",
+  stock: [
+    { size: "S", color: "blue", quantity: 20 },
+    { size: "M", color: "blue", quantity: 5 },
+    { size: "M", color: "black", quantity: 10 },
+    { size: "L", color: "red", quantity: 2 }
+  ]
+},
+{
+  _id: 3,
+  item: "ijk",
+  stock: [
+    { size: "M", color: "blue", quantity: 15 },
+    { size: "L", color: "blue", quantity: 100 },
+    { size: "L", color: "red", quantity: 25 }
+  ]
+}
+])
+```
+创建索引：
+```javascript
+db.inventory.createIndex( { "stock.size": 1, "stock.quantity": 1 } )
+```
+查询：
+```javascript
+db.inventory.find( { "stock.size": "L", "stock.quantity": {$gt:20} } )
+```
+看看是否用到了索引：
+```javascript
+db.inventory.find( { "stock.size": "L", "stock.quantity": {$gt:20} } ).explain()
+```
+
 ## 其他索引
 MongoDB除了默认的id索引，单字段索引，复合索引，还有其他的一些索引。如地理空间索引(Geospatial Index)、
 文本索引（Text Indexes）、哈希索引（Hashed Indexes）。
