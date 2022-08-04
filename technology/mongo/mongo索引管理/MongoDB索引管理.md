@@ -289,6 +289,11 @@ db.collection.find(query,options).explain(options)
 - SUBPLA(未用到index的$or)
 - COUNTSCAN(不使用index进行count)
 
+## 其他索引
+- 隐藏索引
+- 通配符索引
+- 部分索引
+- 稀疏索引
 
 
 ## 涵盖的查询（Covered Queries）
@@ -296,7 +301,8 @@ db.collection.find(query,options).explain(options)
 这些覆盖的查询效率是非常高的。
 
 ## 索引使用建议
-- 能用复合索引的尽量别单个索引
+- 能用复合索引的尽量别单个索引，不要依赖于交叉索引
+- 创建复合索引顺序：匹配在前，范围查询在后
 - 尽量使用索引排序而非内存排序
 - 涵盖查询提高查询效率
 - 避免唯一字段和其他字段组合引起的无用重复索引
@@ -306,6 +312,7 @@ db.collection.find(query,options).explain(options)
 - 避免多字段排序查询正反序问题引起索引无效
 - 每个集合的索引数尽量控制在5个以内
 - 尽量少字段返回，减少网络流量和客户端的内存使用
+- 对大数据的集合创建索引时，建议选择后台运行选项{background:true}
 
 # 参考
 1. https://www.modb.pro/db/332028
