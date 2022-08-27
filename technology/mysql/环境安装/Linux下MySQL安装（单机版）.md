@@ -49,8 +49,9 @@ socket=/var/lib/mysql/mysql.sock
 symbolic-links=0
 ```
 
-# 启动mysql服务器
-到/usr/local/mysql/support-files目录下，启动
+# 启动、停止mysql服务器
+到/usr/local/mysql/support-files目录下
+- 启动
 ```
 启动
 ./mysql.server start
@@ -58,8 +59,21 @@ symbolic-links=0
 service mysql start
 ```
 
-# 登陆mysql
+- 停止
+```
+service mysqld stop
+```
 
+- 重启
+```
+service mysql restart
+```
+
+# 登陆mysql
+- 登陆
+```
+mysql -uroot -h localhost -p
+```
 
 # 遇到的巨坑
 用root用户执行mysqld 跟mysqld_safe 不加--user=root参数 指定用户时会报错的
@@ -72,5 +86,5 @@ service mysql start --user=root
 
 # 参考
 1. [Linux下安装mysql-5.7.24](https://www.jianshu.com/p/276d59cbc529)
-2. []()
-3. []()
+2. [Linux启动/停止/重启Mysql数据库的方法](https://www.cnblogs.com/linjiqin/p/3544472.html)
+3. [Can't connect to local MySQL server through socket [Solved]](https://tableplus.com/blog/2018/08/solved-cant-connect-to-local-mysql-server-through-socket.html)
