@@ -88,6 +88,12 @@ set password for root@localhost=password('你的密码');
 create user kwz identified by 'keweizhou';
 ```
 
+# 授权
+```sql
+grant all privileges on item_test.* to kwz@'%' identified by 'keweizhou';
+flush privileges;
+```
+
 
 # 遇到的巨坑
 用root用户执行mysqld 跟mysqld_safe 不加--user=root参数 指定用户时会报错的
