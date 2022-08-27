@@ -76,12 +76,17 @@ mysql -uroot -h localhost -p
 ```
 
 # 添加账号密码
-# 重新设置密码
+## 重新设置密码
 ```
 set password for root@localhost=password('你的密码');
 ```
 如果不行，参考：
 [解决MySQL修改密码：ERROR 1290 (HY000): The MySQL server is running with the --skip-grant-tables...](https://www.cnblogs.com/chuanqi1995/p/11644414.html)
+
+## 添加账号和密码
+```
+create user kwz identified by 'keweizhou';
+```
 
 
 # 遇到的巨坑
@@ -97,5 +102,6 @@ service mysql start --user=root
 1. [Linux下安装mysql-5.7.24](https://www.jianshu.com/p/276d59cbc529)
 2. [Linux启动/停止/重启Mysql数据库的方法](https://www.cnblogs.com/linjiqin/p/3544472.html)
 3. [Can't connect to local MySQL server through socket [Solved]](https://tableplus.com/blog/2018/08/solved-cant-connect-to-local-mysql-server-through-socket.html)
-3. [解决MySQL修改密码：ERROR 1290 (HY000): The MySQL server is running with the --skip-grant-tables option so it cann]
+4. [解决MySQL修改密码：ERROR 1290 (HY000): The MySQL server is running with the --skip-grant-tables option so it cann]
 (https://www.cnblogs.com/chuanqi1995/p/11644414.html)
+5.[MySQL用户管理：添加用户、授权、删除用户](https://www.cnblogs.com/chanshuyi/p/mysql_user_mng.html)
