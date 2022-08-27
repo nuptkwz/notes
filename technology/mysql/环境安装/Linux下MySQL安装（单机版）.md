@@ -65,6 +65,10 @@ service mysql start
 用root用户执行mysqld 跟mysqld_safe 不加--user=root参数 指定用户时会报错的
 [启动mysql服务时一直提示ERROR! The server quit without updating PID file
 ](https://blog.csdn.net/zqin0/article/details/106444580/)
+因此root账号登陆需要：
+```
+service mysql start --user=root
+```
 
 # 参考
 1. [Linux下安装mysql-5.7.24](https://www.jianshu.com/p/276d59cbc529)
