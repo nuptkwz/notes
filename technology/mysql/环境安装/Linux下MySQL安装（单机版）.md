@@ -104,6 +104,10 @@ flush privileges;
 service mysql start --user=root
 ```
 
+# 使用FlayWay部署时遇到的问题
+报错：Caused by: java.sql.SQLSyntaxErrorException: SELECT command denied to user 'XXX'@'XXX' for table 'user_variables_by_thread'
+参考：https://www.jianshu.com/p/a7a8b5b3c452
+
 # 参考
 1. [Linux下安装mysql-5.7.24](https://www.jianshu.com/p/276d59cbc529)
 2. [Linux启动/停止/重启Mysql数据库的方法](https://www.cnblogs.com/linjiqin/p/3544472.html)
