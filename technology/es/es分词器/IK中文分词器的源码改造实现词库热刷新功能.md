@@ -15,6 +15,16 @@
 在org.wltea.analyzer.dic.Dictionary#initial中，这个方法会加载ik分词器配置文件中的词库内容，如下：
 ![ik分词器源码改造位置initial方法](./images/2.ik分词器源码改造位置initial方法.jpg)
 
+- 增加DictLoader类
+  
+- 将Dictionary类中的getDictRoot方法改为public供DictLoader调用
+
+- 将Dictionary类中添加一个addStopWords方法
+  停用词，stop words，没有太大意义的词汇，the a 没什么词汇，中文，的 了 呵，分词可以忽略掉的一些没意义的词汇，停用词
+  
+- 在Dictionary#initial⽅法中开启⼀个加载词库的线程
+  代码位置：org.wltea.analyzer.dic.Dictionary#initial
+
 
 
 
