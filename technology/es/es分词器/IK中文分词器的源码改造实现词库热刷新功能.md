@@ -24,6 +24,15 @@
   
 - 在Dictionary#initial⽅法中开启⼀个加载词库的线程
   代码位置：org.wltea.analyzer.dic.Dictionary#initial
+  
+- 重新打包
+  虽然我们下载的是7.9.3版本的代码，但是pom文件中的elasticsearch.version是7.4.0版本的，我们需要将它手动手动修改至7.9.3版本后重新编译，
+  执⾏mvn clean package，然后得到我们修改过之后的 elasticsearch-analysis-ik-7.9.3.jar jar包，后⾯⽤这个jar包替换掉ik发⾏版本中
+  的jar包
+```yaml
+        <!--<elasticsearch.version>7.4.0</elasticsearch.version>-->
+        <elasticsearch.version>7.9.3</elasticsearch.version>
+```
 
 
 
