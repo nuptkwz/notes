@@ -4,5 +4,8 @@
 2.《Spring Boot实战开发》
 05 | 自动配置：如何正确理解 Spring Boot 自动配置实现原理？
 
-3. es
+3.《Java 性能优化实战 21 讲》
+03 | 深入剖析：哪些资源，容易成为瓶颈？
+
+4. es
 https://www.elastic.co/guide/en/elasticsearch/reference/7.9/shard-allocation-filtering.html#shard-allocation-filtering
