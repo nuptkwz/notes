@@ -1,6 +1,6 @@
 # 前言
 
-> 本文为加州大学女教授Learning How to Learn视频学习笔记。B站学习链接[Learning How to Learn](https://www.bilibili.com/video/BV1rx411Z7LV/?spm_id_from=333.337.search-card.all.click&vd_source=bf073e2fa624424b8159d07946f25e24)
+> 本文为加州大学女教授Learning How to Learn视频学习笔记。Learning How to Learn系统的介绍了学习的技巧与方法，原来学习如此简单！。B站学习链接[Learning How to Learn](https://www.bilibili.com/video/BV1rx411Z7LV/?spm_id_from=333.337.search-card.all.click&vd_source=bf073e2fa624424b8159d07946f25e24)
 
 # 1.Introduction: Focused and diffuse modes（专注模式和发散模式的介绍）
 

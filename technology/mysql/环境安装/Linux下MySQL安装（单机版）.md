@@ -69,8 +69,8 @@ service mysqld stop
 service mysql restart
 ```
 
-# 登陆mysql
-- 登陆
+# 登录mysql
+- 登录
 ```
 mysql -uroot -h localhost -p
 ```
