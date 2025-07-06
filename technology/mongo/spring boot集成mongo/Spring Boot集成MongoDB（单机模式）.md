@@ -1,16 +1,17 @@
-# 前言
+[toc]
+## 前言
 >本文介绍了SpringBoot集成了MongoDB，利用SpringDataMongodb操作文章的评论的增、删、改、查过程。
 
-# 环境
+## 环境
 - spring-boot（2.1.6）
 - mongodb(4.2.8)
 - spring-boot-starter-data-mongodb
 - IntelliJ IDEA (2019)
 
-# 微服务模块搭建
-## 搭建SpringBoot项目
+## 微服务模块搭建
+### 搭建SpringBoot项目
 比较简单，不再赘述
-## 引入pom.xm
+### 引入pom.xm
 主要的包是spring-boot-starter-parent、spring-boot-starter-web、spring-boot-starter-data-mongodb，如下：
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -75,7 +76,7 @@
 
 </project>
 ```
-## 配置application.yml
+### 配置application.yml
 我搭的mongodb没加密码，比较简单的配置，可以通过官网提供的方式，也可以通过uri的方式，如下：
 ```yml
 spring:
@@ -86,9 +87,9 @@ spring:
       database: article
       port: 27017
       #uri方式
-      # uri: mongodb://192.168.30.129/article
+      ## uri: mongodb://192.168.30.129/article
 ```
-## 评论实体类
+### 评论实体类
 评论的实体如下，我创建了一个复合索引，@CompoundIndex(def = "{'userId':1,'nickName':-1}")，它是名字和别名组成的，因为这两个基本一块用的，复合索引可以减少一个索引开销
 ```java
 package com.mongo.springbootmongo.entity;
@@ -124,7 +125,7 @@ public class Comment {
     private String articleId;
 }
 ```
-## Controller层代码
+### Controller层代码
 ```
 package com.mongo.springbootmongo.controller;
 
@@ -156,7 +157,7 @@ public class CommentController {
 }
 
 ```
-## Service层实现
+### Service层实现
 service层实现提供了5个方法，分别为：saveComment（保存评论）、updateComment（更新评论）、deleteCommentById（删除评论）、findCommentList（查询评论列表）、findCommentById（通过id查询评论）
 ```java
 package com.mongo.springbootmongo.service.impl;
@@ -203,7 +204,7 @@ public class CommentServiceImpl implements CommentService {
 
 }
 ```
-## DAO层
+### DAO层
 dao层直接继承了MongoRepository，比较简单
 ```java
 package com.mongo.springbootmongo.dao;
@@ -214,16 +215,13 @@ public interface CommentRepository extends MongoRepository<Comment,String> {
 
 }
 ```
-## 测试
+### 测试
 本篇测试了两个接口，分别是保存评论和评论列表
 - 保存评论
 
 里面postman测试如下：
 ![保存评论postman测试](./images/保存评论postman测试.png)
 - 评论列表
-![评论列表postman测试](./images/评论列表postman测试.png)
-# 总结
+  ![评论列表postman测试](./images/评论列表postman测试.png)
+## 总结
 本文主要介绍了通过SpringData-MongoDB操作连接MongoDB操作数据库的过程
-
-参考：
-1. [https://github.com/nuptkwz/notes/blob/master/technology/mongo/Linux%E7%8E%AF%E5%A2%83%E4%B8%8BmongoDB%204%E6%90%AD%E5%BB%BA%EF%BC%88%E5%8D%95%E6%9C%BA%E6%A8%A1%E5%BC%8F%EF%BC%89.md](https://github.com/nuptkwz/notes/blob/master/technology/mongo)
